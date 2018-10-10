@@ -59,8 +59,8 @@ def main(args):
     facenet.write_arguments_to_file(args, os.path.join(log_dir, 'arguments.txt'))
         
     # Store some git revision info in a text file in the log directory
-    src_path,_ = os.path.split(os.path.realpath(__file__))
-    facenet.store_revision_info(src_path, log_dir, ' '.join(sys.argv))
+    src_path,_ = os.path.split(os.path.realpath(__file__)) #Shuai: 获得当前工作路径
+    facenet.store_revision_info(src_path, log_dir, ' '.join(sys.argv)) # Shuai: 没用
 
     np.random.seed(seed=args.seed)
     train_set = facenet.get_dataset(args.data_dir)
@@ -135,8 +135,8 @@ def main(args):
         
         embeddings = tf.nn.l2_normalize(prelogits, 1, 1e-10, name='embeddings')
         # Split embeddings into anchor, positive and negative and calculate triplet loss
-        anchor, positive, negative = tf.unstack(tf.reshape(embeddings, [-1,3,args.embedding_size]), 3, 1)
-        triplet_loss = facenet.triplet_loss(anchor, positive, negative, args.alpha)
+        anchor, positive, negative = tf.unstack(tf.reshape(embeddings, [-1,3,args.embedding_size]), 3, 1) # Shuai，将embedding按照第二维度（标准，正例，反例）展开成三个tensor开始，结束，中间，
+        triplet_loss = facenet.triplet_loss(anchor, positive, negative, args.alpha) # Shuai,
         
         learning_rate = tf.train.exponential_decay(learning_rate_placeholder, global_step,
             args.learning_rate_decay_epochs*args.epoch_size, args.learning_rate_decay_factor, staircase=True)
@@ -201,12 +201,15 @@ def train(args, sess, dataset, epoch, image_paths_placeholder, labels_placeholde
           batch_size_placeholder, learning_rate_placeholder, phase_train_placeholder, enqueue_op, input_queue, global_step, 
           embeddings, loss, train_op, summary_op, summary_writer, learning_rate_schedule_file,
           embedding_size, anchor, positive, negative, triplet_loss):
+    # Shuai: 一个epoch的batch计数器
     batch_number = 0
-    
+    # Shuai: 设置学习率
     if args.learning_rate>0.0:
         lr = args.learning_rate
     else:
         lr = facenet.get_learning_rate_from_file(learning_rate_schedule_file, epoch)
+
+    # Shuai：start_training
     while batch_number < args.epoch_size:
         # Sample people randomly from the dataset
         image_paths, num_per_class = sample_people(dataset, args.people_per_batch, args.images_per_person)

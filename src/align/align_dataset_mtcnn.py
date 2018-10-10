@@ -31,8 +31,8 @@ import os
 import argparse
 import tensorflow as tf
 import numpy as np
-import facenet
-import align.detect_face
+import facenet # Shuai
+import align.detect_face# Shuai
 import random
 from time import sleep
 
@@ -141,8 +141,8 @@ def main(args):
 def parse_arguments(argv):
     parser = argparse.ArgumentParser()
     
-    parser.add_argument('input_dir', type=str, help='Directory with unaligned images.')
-    parser.add_argument('output_dir', type=str, help='Directory with aligned face thumbnails.')
+    parser.add_argument('input_dir', type=str, help='Directory with unaligned images.') # Shuai: test path
+    parser.add_argument('output_dir', type=str, help='Directory with aligned face thumbnails.') # Shuai: test path
     parser.add_argument('--image_size', type=int,
         help='Image size (height, width) in pixels.', default=182)
     parser.add_argument('--margin', type=int,
@@ -156,4 +156,5 @@ def parse_arguments(argv):
     return parser.parse_args(argv)
 
 if __name__ == '__main__':
-    main(parse_arguments(sys.argv[1:]))
+    main(parse_arguments(sys.argv[1:])) # Shuai
+
