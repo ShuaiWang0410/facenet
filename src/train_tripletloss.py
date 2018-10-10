@@ -422,28 +422,36 @@ def parse_arguments(argv):
     parser = argparse.ArgumentParser()
     
     parser.add_argument('--logs_base_dir', type=str, 
-        help='Directory where to write event logs.', default='~/logs/facenet')
+        # help='Directory where to write event logs.', default='~/logs/facenet') # ShuaiWang: use mine
+        help='Directory where to write event logs.', default='~/sw-facenet-logs/facenet')
     parser.add_argument('--models_base_dir', type=str,
-        help='Directory where to write trained models and checkpoints.', default='~/models/facenet')
+        # help='Directory where to write trained models and checkpoints.', default='~/models/facenet') # ShuaiWang: use mine
+        help='Directory where to write trained models and checkpoints.', default='~/sw-facenet-cp-models/facenet')
     parser.add_argument('--gpu_memory_fraction', type=float,
-        help='Upper bound on the amount of GPU memory that will be used by the process.', default=1.0)
+        help='Upper bound on the amount of GPU memory that will be used by the process.', default=2.0) # ShuaiWang set 1 to 2
     parser.add_argument('--pretrained_model', type=str,
         help='Load a pretrained model before training starts.')
     parser.add_argument('--data_dir', type=str,
         help='Path to the data directory containing aligned face patches.',
-        default='~/datasets/casia/casia_maxpy_mtcnnalign_182_160')
+        # default='~/datasets/casia/casia_maxpy_mtcnnalign_182_160') # Shuai: use mine
+        default='/home/ubuntu/CASIA-WebFace-Align-1000People')
     parser.add_argument('--model_def', type=str,
         help='Model definition. Points to a module containing the definition of the inference graph.', default='models.inception_resnet_v1')
     parser.add_argument('--max_nrof_epochs', type=int,
-        help='Number of epochs to run.', default=500)
+        # help='Number of epochs to run.', default=500) # Shuai: shrink the max epoch
+        help='Number of epochs to run.', default=50)
     parser.add_argument('--batch_size', type=int,
-        help='Number of images to process in a batch.', default=90)
+        #help='Number of images to process in a batch.', default=90) # Shuai: shrink the batch_size to 50
+        help='Number of images to process in a batch.', default=50)
     parser.add_argument('--image_size', type=int,
-        help='Image size (height, width) in pixels.', default=160)
+        # help='Image size (height, width) in pixels.', default=160) # Shuai: use our size
+        help='Image size (height, width) in pixels.', default=182)
     parser.add_argument('--people_per_batch', type=int,
-        help='Number of people per batch.', default=45)
+        # help='Number of people per batch.', default=45) # Shuai: shrink the number of people to 25
+        help='Number of people per batch.', default=25)
     parser.add_argument('--images_per_person', type=int,
-        help='Number of images per person.', default=40)
+        # help='Number of images per person.', default=40) # Shuai: use mine
+        help = 'Number of images per person', default=30)
     parser.add_argument('--epoch_size', type=int,
         help='Number of batches per epoch.', default=1000)
     parser.add_argument('--alpha', type=float,
@@ -463,23 +471,25 @@ def parse_arguments(argv):
         help='The optimization algorithm to use', default='ADAGRAD')
     parser.add_argument('--learning_rate', type=float,
         help='Initial learning rate. If set to a negative value a learning rate ' +
+        # 'schedule can be specified in the file "learning_rate_schedule.txt"', default=0.1) # ShuaiWang use mine
         'schedule can be specified in the file "learning_rate_schedule.txt"', default=0.1)
     parser.add_argument('--learning_rate_decay_epochs', type=int,
-        help='Number of epochs between learning rate decay.', default=100)
+        # help='Number of epochs between learning rate decay.', default=100)
+        help='Number of epochs between learning rate decay.', default=10) # ShuaiWang use mine
     parser.add_argument('--learning_rate_decay_factor', type=float,
-        help='Learning rate decay factor.', default=1.0)
+        help='Learning rate decay factor.', default=1.0) # ShuaiWang dont know
     parser.add_argument('--moving_average_decay', type=float,
         help='Exponential decay for tracking of training parameters.', default=0.9999)
     parser.add_argument('--seed', type=int,
         help='Random seed.', default=666)
     parser.add_argument('--learning_rate_schedule_file', type=str,
-        help='File containing the learning rate schedule that is used when learning_rate is set to to -1.', default='data/learning_rate_schedule.txt')
+        help='File containing the learning rate schedule that is used when learning_rate is set to to -1.', default='/home/ubuntu/ShuaiWang/sw-face-net/facenet/data/learning_rate_schedule.txt')
 
     # Parameters for validation on LFW
     parser.add_argument('--lfw_pairs', type=str,
-        help='The file containing the pairs to use for validation.', default='data/pairs.txt')
+        help='The file containing the pairs to use for validation.', default='/home/ubuntu/ShuaiWang/sw-face-net/facenet/data/pairs.txt') # Shuai: use absolute path
     parser.add_argument('--lfw_dir', type=str,
-        help='Path to the data directory containing aligned face patches.', default='')
+        help='Path to the data directory containing aligned face patches.', default='/home/ubuntu/lfw-align') # ShuaiWang: use mine
     parser.add_argument('--lfw_nrof_folds', type=int,
         help='Number of folds to use for cross validation. Mainly used for testing.', default=10)
     return parser.parse_args(argv)
