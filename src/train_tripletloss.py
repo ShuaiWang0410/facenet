@@ -176,7 +176,17 @@ def main(args):
 
             # Training and validation loop
             epoch = 0
+            print("Shuai Wang: really start training") # ShuaiWang
             while epoch < args.max_nrof_epochs:
+
+                # ShuaiWang milestones
+
+                if 0 == epoch % 5 and epoch > 0:
+                    ms_file = open("/home/ubuntu/sw-facenet-milestones/No." + str(epoch) +"epoch.txt", "w+")
+                    ms_file.close()
+
+                # ShuaiWang end
+
                 step = sess.run(global_step, feed_dict=None)
                 epoch = step // args.epoch_size
                 # Train for one epoch
@@ -193,6 +203,12 @@ def main(args):
                     evaluate(sess, lfw_paths, embeddings, labels_batch, image_paths_placeholder, labels_placeholder, 
                             batch_size_placeholder, learning_rate_placeholder, phase_train_placeholder, enqueue_op, actual_issame, args.batch_size, 
                             args.lfw_nrof_folds, log_dir, step, summary_writer, args.embedding_size)
+    # ShuaiWang write success mark
+
+    ms_file = open("/home/ubuntu/sw-facenet-milestones/facenet_1000people_finishmark.txt", "w+")
+    ms_file.close()
+
+    # ShuaiWang success end
 
     return model_dir
 
