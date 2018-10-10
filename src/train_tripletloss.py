@@ -458,16 +458,16 @@ def parse_arguments(argv):
         help='Number of epochs to run.', default=50)
     parser.add_argument('--batch_size', type=int,
         #help='Number of images to process in a batch.', default=90) # Shuai: shrink the batch_size to 50
-        help='Number of images to process in a batch.', default=50)
+        help='Number of images to process in a batch.', default=90)
     parser.add_argument('--image_size', type=int,
         # help='Image size (height, width) in pixels.', default=160) # Shuai: use our size
         help='Image size (height, width) in pixels.', default=182)
     parser.add_argument('--people_per_batch', type=int,
         # help='Number of people per batch.', default=45) # Shuai: shrink the number of people to 25
-        help='Number of people per batch.', default=25)
+        help='Number of people per batch.', default=45)
     parser.add_argument('--images_per_person', type=int,
         # help='Number of images per person.', default=40) # Shuai: use mine
-        help = 'Number of images per person', default=30)
+        help = 'Number of images per person', default=40)
     parser.add_argument('--epoch_size', type=int,
         help='Number of batches per epoch.', default=1000)
     parser.add_argument('--alpha', type=float,
