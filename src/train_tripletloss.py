@@ -493,7 +493,7 @@ def parse_arguments(argv):
         # help='Number of epochs between learning rate decay.', default=100)
         help='Number of epochs between learning rate decay.', default=1) # ShuaiWang use mine
     parser.add_argument('--learning_rate_decay_factor', type=float,
-        help='Learning rate decay factor.', default=1.0) # ShuaiWang dont know
+        help='Learning rate decay factor.', default=0.96) # ShuaiWang dont know
     parser.add_argument('--moving_average_decay', type=float,
         help='Exponential decay for tracking of training parameters.', default=0.9999)
     parser.add_argument('--seed', type=int,
