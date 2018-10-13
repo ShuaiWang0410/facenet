@@ -444,7 +444,7 @@ def parse_arguments(argv):
         # help='Directory where to write trained models and checkpoints.', default='~/models/facenet') # ShuaiWang: use mine
         help='Directory where to write trained models and checkpoints.', default='~/hpt-facenet-cp-models/facenet')
     parser.add_argument('--gpu_memory_fraction', type=float,
-        help='Upper bound on the amount of GPU memory that will be used by the process.', default=0.8) # ShuaiWang set 1
+        help='Upper bound on the amount of GPU memory that will be used by the process.', default=1.0) # ShuaiWang set 1
     parser.add_argument('--pretrained_model', type=str,
         help='Load a pretrained model before training starts.')
     parser.add_argument('--data_dir', type=str,
@@ -488,7 +488,7 @@ def parse_arguments(argv):
     parser.add_argument('--learning_rate', type=float,
         help='Initial learning rate. If set to a negative value a learning rate ' +
         # 'schedule can be specified in the file "learning_rate_schedule.txt"', default=0.1) # ShuaiWang use mine 0.15
-        'schedule can be specified in the file "learning_rate_schedule.txt"', default=0.15)
+        'schedule can be specified in the file "learning_rate_schedule.txt"', default=0.1)
     parser.add_argument('--learning_rate_decay_epochs', type=int,
         # help='Number of epochs between learning rate decay.', default=100)
         help='Number of epochs between learning rate decay.', default=10) # Pengtao's idea
