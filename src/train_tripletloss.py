@@ -444,7 +444,7 @@ def parse_arguments(argv):
         # help='Directory where to write trained models and checkpoints.', default='~/models/facenet') # ShuaiWang: use mine
         help='Directory where to write trained models and checkpoints.', default='~/hpt-facenet-cp-models/facenet')
     parser.add_argument('--gpu_memory_fraction', type=float,
-        help='Upper bound on the amount of GPU memory that will be used by the process.', default=1.0) # ShuaiWang set 1
+        help='Upper bound on the amount of GPU memory that will be used by the process.', default=0.9) # ShuaiWang set 1
     parser.add_argument('--pretrained_model', type=str,
         help='Load a pretrained model before training starts.')
     parser.add_argument('--data_dir', type=str,
