@@ -455,7 +455,7 @@ def parse_arguments(argv):
         help='Model definition. Points to a module containing the definition of the inference graph.', default='models.inception_resnet_v1')
     parser.add_argument('--max_nrof_epochs', type=int,
         # help='Number of epochs to run.', default=500) # Shuai: shrink the max epoch
-        help='Number of epochs to run.', default=30)
+        help='Number of epochs to run.', default=100)
     parser.add_argument('--batch_size', type=int,
         #help='Number of images to process in a batch.', default=90) # Shuai: shrink the batch_size to 50
         help='Number of images to process in a batch.', default=90)
@@ -488,10 +488,10 @@ def parse_arguments(argv):
     parser.add_argument('--learning_rate', type=float,
         help='Initial learning rate. If set to a negative value a learning rate ' +
         # 'schedule can be specified in the file "learning_rate_schedule.txt"', default=0.1) # ShuaiWang use mine
-        'schedule can be specified in the file "learning_rate_schedule.txt"', default=0.12)
+        'schedule can be specified in the file "learning_rate_schedule.txt"', default=0.1)
     parser.add_argument('--learning_rate_decay_epochs', type=int,
         # help='Number of epochs between learning rate decay.', default=100)
-        help='Number of epochs between learning rate decay.', default=5) # ShuaiWang use mine
+        help='Number of epochs between learning rate decay.', default=1) # ShuaiWang use mine
     parser.add_argument('--learning_rate_decay_factor', type=float,
         help='Learning rate decay factor.', default=0.96) # ShuaiWang dont know
     parser.add_argument('--moving_average_decay', type=float,
