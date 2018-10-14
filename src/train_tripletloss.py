@@ -446,7 +446,7 @@ def parse_arguments(argv):
     parser.add_argument('--gpu_memory_fraction', type=float,
         help='Upper bound on the amount of GPU memory that will be used by the process.', default=0.98) # ShuaiWang set 1 will sent warning
     parser.add_argument('--pretrained_model', type=str,
-        help='Load a pretrained model before training starts.', default= '~/hpt-facenet-cp-models/facenet/model-20181013-064335.ckpt-50499') # Shuai: Pengtao's 50 epoch pretrained_model
+        help='Load a pretrained model before training starts.', default= '~/hpt-facenet-cp-models/facenet/20181013-064335/model-20181013-064335.ckpt-50499') # Shuai: Pengtao's 50 epoch pretrained_model
     parser.add_argument('--data_dir', type=str,
         help='Path to the data directory containing aligned face patches.',
         # default='~/datasets/casia/casia_maxpy_mtcnnalign_182_160') # Shuai: use mine
