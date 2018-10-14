@@ -491,9 +491,9 @@ def parse_arguments(argv):
         'schedule can be specified in the file "learning_rate_schedule.txt"', default=0.08) # ShuaiWang
     parser.add_argument('--learning_rate_decay_epochs', type=int,
         # help='Number of epochs between learning rate decay.', default=100)
-        help='Number of epochs between learning rate decay.', default=10) # Pengtao's idea
+        help='Number of epochs between learning rate decay.', default=1) # Pengtao's idea
     parser.add_argument('--learning_rate_decay_factor', type=float,
-        help='Learning rate decay factor.', default=0.96) # Yan's idea
+        help='Learning rate decay factor.', default=0.94) # Yan's idea
     parser.add_argument('--moving_average_decay', type=float,
         help='Exponential decay for tracking of training parameters.', default=0.9999)
     parser.add_argument('--seed', type=int,
