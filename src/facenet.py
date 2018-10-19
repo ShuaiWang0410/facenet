@@ -315,6 +315,7 @@ class ImageClass():
         return len(self.image_paths)
   
 def get_dataset(path, has_class_directories=True):
+    # Shuai: return the dataset form ImageClass[]
     dataset = []
     path_exp = os.path.expanduser(path)
     classes = [path for path in os.listdir(path_exp) \
@@ -433,7 +434,8 @@ def calculate_roc(thresholds, embeddings1, embeddings2, actual_issame, nrof_fold
     accuracy = np.zeros((nrof_folds))
     
     indices = np.arange(nrof_pairs)
-    
+    # ShuaiWang: cross-validation arguments: fold_idx->No. of group(group index) train_set->index of training samples, test_set-> index of test samples
+    #
     for fold_idx, (train_set, test_set) in enumerate(k_fold.split(indices)):
         if subtract_mean:
             mean = np.mean(np.concatenate([embeddings1[train_set], embeddings2[train_set]]), axis=0)

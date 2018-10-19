@@ -1,10 +1,12 @@
 变量
 network: 用了model.inception_resnet_v1.py
 log_dir, subdir:日志文件
-train_set : 数据集
+train_set : 训练数据集
 src_path : 工作目录
 model_dir : 
 pairs: data/pairs. LFW图片配对，包括正例和反例，
+
+enqueue_op:
 
 lfw_paths : 元组(图片1路径，图片二路径)的list，是LFW中数据的List
 actual_issame : True or False的list，表示上面的每一对是正例还是反例
@@ -16,29 +18,43 @@ actual_issame : True or False的list，表示上面的每一对是正例还是�
     shape,
     name=None
 	)
-	reshape 里面的-1是表示剩下全部维度的意思，比如一个18个元素的tensor， [2,-1,3]中-1表示3
--- tf.unstack()
+	reshape 里面的-1是表示剩下全部维度的意思，比如一个18个标量的tensor， [2,-1,3]中-1表示3，一般这个-1用于表示未知的维度，比如样本的数量。
+	[] 直接表示标量
+-- tf.unstack()将tensor进行降维，剩下的tensor是原tensor中的tensor，但是没有
+-- enqueue_many(tensor1,tensor2) 
+每个tensor被拆开然后放到队列中，tensor1和tensor2的第0维必须相等
 
 
 --网络部分变量
---learning_rate_placeholder
---batch_size_placeholder 一个batch的大小
---phase_train_placeholder
---image_paths_placeholder 一张图片的路径
---labels——placeholder 一张图片的label
---input_queue = 队列，每个队列元素包含三行数据，每行数据包括一个image_path_placeholder和一个label_placeholder, 这里不是图片数据
+--learning_rate_placeholder  是个标量
+--batch_size_placeholder 一个batch的大小 是个标量
+--phase_train_placeholder  是个标量
+--image_paths_placeholder 所有一张图片的路径 是个字符串，形状为n*3
+--labels——placeholder 所有一张图片的label 是个矢量，形状为n*3
+--input_queue = 队列，每个队列元素包含三行数据，每行数据包括一个image_path_placeholder（字符串型）和一个label_placeholder（标量）, 这里不是图片数据, 
+--enqueue_op 真正的入队操作本身，注意tensorflow必须返回操作
 
---images_and_labels: 真正图片数据列表，每个元素是一个元组（tf解码图片和label）
+--images_and_labels: 真正图片数据列表，每个元素是一个元组（tf解码图片（长，宽，3通道）和label标签（标量））
 
 --image_batch, labels_batch: g根据images_and_labels 分解出的image_batch 和labels_batch
 
---prelogits inception_resnet_v1网络本身
---embeddings L2 norm 之后
---learning_rate 
+--prelogits ：inception_resnet_v1网络本身
+
+--embeddings v1 网络后的输出，进行l2 normalize 就是网络输出的embedding按欧几里得归一化后的结果，也是操作
+
+--anchor, positive, negative: 三个率
+--learning_rate ：使用指数衰减学习率
+--regularization_losses : 
+--total_loss ：最终损失 = triplet_loss + regularization_loss 这里是还是定义最终损失的计算方式（操作），不是最终的值
+--train_op : 训练操作
+--saver : 
+中间结果保存与恢复,max_to_keep是最大checkpoint保存数量
+--global_step : 当前总训练步数，以此来计算经历了第几个epoch
+--step : 训练一个模型的总步数，以此来计算经历了几个epoch（同global_step）
 --
 
 
-参数：
+参数（args里面的）：
 seed : 默认666
 model_def : 默认
 data_dir : 训练数据路径，母路径
@@ -46,3 +62,12 @@ pretrained_model : (非必须) 预处理模型
 lfw_dir : lfw数据集位置
 lfw_pairs : lfw pair 图片配对
 image_size : 读入图片的大小（训练图片）
+keep_probability : drop out率
+embedding_size : embedding的大小
+alpha : 传给triplet loss的参数
+learning_rate: 学习率初始值，传进去以后进行指数衰减学习
+epoch_size: 每个epoch的batch的数目
+optimizer:训练器，默认为ADAGRAD
+
+
+

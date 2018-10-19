@@ -174,7 +174,8 @@ def inception_resnet_v1(inputs, is_training=True,
                             is_training=is_training):
             with slim.arg_scope([slim.conv2d, slim.max_pool2d, slim.avg_pool2d],
                                 stride=1, padding='SAME'):
-      
+
+                # ShuaiWang: By now it is the stem of the inception-resnet-v1
                 # 149 x 149 x 32
                 net = slim.conv2d(inputs, 32, 3, stride=2, padding='VALID',
                                   scope='Conv2d_1a_3x3')

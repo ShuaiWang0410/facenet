@@ -63,7 +63,7 @@ def main(args):
     facenet.store_revision_info(src_path, log_dir, ' '.join(sys.argv)) # Shuai: 没用
 
     np.random.seed(seed=args.seed)
-    train_set = facenet.get_dataset(args.data_dir)
+    train_set = facenet.get_dataset(args.data_dir) # Shuai：dataset form is ImageClass{class_name(folder name), image paths in this folder}
     
     print('Model directory: %s' % model_dir)
     print('Log directory: %s' % log_dir)
@@ -75,6 +75,7 @@ def main(args):
         # Read the file containing the pairs used for testing
         pairs = lfw.read_pairs(os.path.expanduser(args.lfw_pairs))
         # Get the paths for the corresponding images
+        # Shuai Wang: lfw_paris[]: pairs of (path1, path2) actual_issame[] (true or false) of current pair is same or not
         lfw_paths, actual_issame = lfw.get_paths(os.path.expanduser(args.lfw_dir), pairs)
         
     
@@ -129,7 +130,7 @@ def main(args):
         labels_batch = tf.identity(labels_batch, 'label_batch')
 
         # Build the inference graph
-        prelogits, _ = network.inference(image_batch, args.keep_probability, 
+        prelogits, _ = network.inference(image_batch, args.keep_probability,
             phase_train=phase_train_placeholder, bottleneck_layer_size=args.embedding_size,
             weight_decay=args.weight_decay)
         
@@ -342,12 +343,13 @@ def sample_people(dataset, people_per_batch, images_per_person):
     num_per_class = []
     sampled_class_indices = []
     # Sample images from these classes until we have enough
+    # Shuai: image_paths is current batch size, nrof_images is the final batch size
     while len(image_paths)<nrof_images:
         class_index = class_indices[i]
         nrof_images_in_class = len(dataset[class_index])
         image_indices = np.arange(nrof_images_in_class)
         np.random.shuffle(image_indices)
-        nrof_images_from_class = min(nrof_images_in_class, images_per_person, nrof_images-len(image_paths))
+        nrof_images_from_class = min(nrof_images_in_class, images_per_person, nrof_images-len(image_paths)) # Shuai: if images in a class is less than images per person required by args, then just feed it
         idx = image_indices[0:nrof_images_from_class]
         image_paths_for_class = [dataset[class_index].image_paths[j] for j in idx]
         sampled_class_indices += [class_index]*nrof_images_from_class
