@@ -439,23 +439,23 @@ def parse_arguments(argv):
     
     parser.add_argument('--logs_base_dir', type=str, 
         # help='Directory where to write event logs.', default='~/logs/facenet') # ShuaiWang: use mine
-        help='Directory where to write event logs.', default='~/hpt-facenet-logs-2/facenet')
+        help='Directory where to write event logs.', default='~/hpt-facenet-logs/facenet')
     parser.add_argument('--models_base_dir', type=str,
         # help='Directory where to write trained models and checkpoints.', default='~/models/facenet') # ShuaiWang: use mine
-        help='Directory where to write trained models and checkpoints.', default='~/hpt-facenet-cp-models-2/facenet')
+        help='Directory where to write trained models and checkpoints.', default='~/hpt-facenet-cp-models/facenet')
     parser.add_argument('--gpu_memory_fraction', type=float,
         help='Upper bound on the amount of GPU memory that will be used by the process.', default=0.98) # ShuaiWang set 1 will sent warning
     parser.add_argument('--pretrained_model', type=str,
-        help='Load a pretrained model before training starts.', default= '~/hpt-facenet-cp-models/facenet/20181013-064335/model-20181013-064335.ckpt-50499') # Shuai: Pengtao's 50 epoch pretrained_model
+        help='Load a pretrained model before training starts.') # , default= '~/hpt-facenet-cp-models/facenet/20181013-064335/model-20181013-064335.ckpt-50499') # Shuai: Pengtao's 50 epoch pretrained_model
     parser.add_argument('--data_dir', type=str,
         help='Path to the data directory containing aligned face patches.',
         # default='~/datasets/casia/casia_maxpy_mtcnnalign_182_160') # Shuai: use mine
-        default='/home/ec2-user/CASIA-WebFace-Align-1000People')
+        default='/home/ec2-user/CASIA-WebFace-Align-4000People')
     parser.add_argument('--model_def', type=str,
         help='Model definition. Points to a module containing the definition of the inference graph.', default='models.inception_resnet_v1')
     parser.add_argument('--max_nrof_epochs', type=int,
         # help='Number of epochs to run.', default=500) # Shuai: according to Pengtao's idea changes
-        help='Number of epochs to run.', default=70) # Shuai: last value is 50, continue to training
+        help='Number of epochs to run.', default=100) # Shuai: last value is 50, continue to training
     parser.add_argument('--batch_size', type=int,
         #help='Number of images to process in a batch.', default=90) # Shuai: shrink the batch_size to 50
         help='Number of images to process in a batch.', default=90)
@@ -488,12 +488,12 @@ def parse_arguments(argv):
     parser.add_argument('--learning_rate', type=float,
         help='Initial learning rate. If set to a negative value a learning rate ' +
         # 'schedule can be specified in the file "learning_rate_schedule.txt"', default=0.1) # ShuaiWang use mine 0.15
-        'schedule can be specified in the file "learning_rate_schedule.txt"', default=0.08) # ShuaiWang
+        'schedule can be specified in the file "learning_rate_schedule.txt"', default=0.1) # ShuaiWang
     parser.add_argument('--learning_rate_decay_epochs', type=int,
         # help='Number of epochs between learning rate decay.', default=100)
         help='Number of epochs between learning rate decay.', default=1) # Pengtao's idea
     parser.add_argument('--learning_rate_decay_factor', type=float,
-        help='Learning rate decay factor.', default=0.94) # Yan's idea
+        help='Learning rate decay factor.', default=0.96) # Yan's idea
     parser.add_argument('--moving_average_decay', type=float,
         help='Exponential decay for tracking of training parameters.', default=0.9999)
     parser.add_argument('--seed', type=int,
