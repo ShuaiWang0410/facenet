@@ -235,12 +235,12 @@ def train(args, sess, dataset, epoch, image_paths_placeholder, labels_placeholde
         start_time = time.time()
         nrof_examples = args.people_per_batch * args.images_per_person
         labels_array = np.reshape(np.arange(nrof_examples),(-1,3))
-        image_paths_array = np.reshape(np.expand_dims(np.array(image_paths),1), (-1,3))
-        sess.run(enqueue_op, {image_paths_placeholder: image_paths_array, labels_placeholder: labels_array})
+        image_paths_array = np.reshape(np.expand_dims(np.array(image_paths),1), (-1,3)) # divide the input batch into 3 columns
+        sess.run(enqueue_op, {image_paths_placeholder: image_paths_array, labels_placeholder: labels_array}) # fetch some image paths from total
         emb_array = np.zeros((nrof_examples, embedding_size))
         nrof_batches = int(np.ceil(nrof_examples / args.batch_size))
         for i in range(nrof_batches):
-            batch_size = min(nrof_examples-i*args.batch_size, args.batch_size)
+            batch_size = min(nrof_examples-i*args.batch_size, args.batch_size) # calculates the embeddings for a batch
             emb, lab = sess.run([embeddings, labels_batch], feed_dict={batch_size_placeholder: batch_size, 
                 learning_rate_placeholder: lr, phase_train_placeholder: True})
             emb_array[lab,:] = emb
@@ -313,7 +313,7 @@ def select_triplets(embeddings, nrof_images_per_class, image_paths, people_per_b
                 pos_dist_sqr = np.sum(np.square(embeddings[a_idx]-embeddings[p_idx]))
                 neg_dists_sqr[emb_start_idx:emb_start_idx+nrof_images] = np.NaN
                 #all_neg = np.where(np.logical_and(neg_dists_sqr-pos_dist_sqr<alpha, pos_dist_sqr<neg_dists_sqr))[0]  # FaceNet selection
-                all_neg = np.where(neg_dists_sqr-pos_dist_sqr<alpha)[0] # VGG Face selecction
+                all_neg = np.where(neg_dists_sqr-pos_dist_sqr<alpha)[0] # VGG Face selecction # Shuai: the indexes of the negative pairs.
                 nrof_random_negs = all_neg.shape[0]
                 if nrof_random_negs>0:
                     rnd_idx = np.random.randint(nrof_random_negs)
@@ -325,7 +325,7 @@ def select_triplets(embeddings, nrof_images_per_class, image_paths, people_per_b
 
                 num_trips += 1
 
-        emb_start_idx += nrof_images
+        emb_start_idx += nrof_images # Shuai: the embedding results are continuous corresponding to that of images of all people in a batch,
 
     np.random.shuffle(triplets)
     return triplets, num_trips, len(triplets)
