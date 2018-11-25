@@ -141,8 +141,8 @@ def main(args):
 def parse_arguments(argv):
     parser = argparse.ArgumentParser()
     
-    parser.add_argument('input_dir', type=str, help='Directory with unaligned images.') # Shuai: test path
-    parser.add_argument('output_dir', type=str, help='Directory with aligned face thumbnails.') # Shuai: test path
+    parser.add_argument('input_dir', type=str, help='Directory with unaligned images.', default="/home/ec2-user/input_align") # Shuai: test path
+    parser.add_argument('output_dir', type=str, help='Directory with aligned face thumbnails.', default="/home/ec2-user/output_align") # Shuai: test path
     parser.add_argument('--image_size', type=int,
         help='Image size (height, width) in pixels.', default=182)
     parser.add_argument('--margin', type=int,
