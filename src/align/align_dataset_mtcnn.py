@@ -131,6 +131,10 @@ def main(args):
                                 misc.imsave(output_filename_n, scaled)
                                 text_file.write('%s %d %d %d %d\n' % (output_filename_n, bb[0], bb[1], bb[2], bb[3]))
                         else:
+                            '''shuai : leave it anyway'''
+                            scaled = misc.imresize(img, (args.image_size, args.image_size), interp='bilinear')
+                            output_filename_n = "{}{}".format(filename_base, file_extension)
+                            misc.imsave(output_filename_n, scaled)
                             print('Unable to align "%s"' % image_path)
                             text_file.write('%s\n' % (output_filename))
                             

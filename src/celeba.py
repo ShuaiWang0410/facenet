@@ -15,6 +15,9 @@ select_feature_image_path = "/Volumes/新加卷"
 
 #---------------------------------------------------------------------------------------
 
+'''
+统计每位名人有多少图片，输出为(人物id, 文件名列表)的哈希表
+'''
 def countIdentities(label_path, identity_labels):
 
     identity_path = os.path.join(label_path, identity_labels)
@@ -32,7 +35,9 @@ def countIdentities(label_path, identity_labels):
             s = file.readline()
     
     return dic_ids_file
-
+'''
+统计各Feature有多少张图片，输出为(特征id, 文件名列表)和(特征名称，特征id)的哈希表
+'''
 def countFeaturesByFiles(label_path, attribute_labels):
     
     attribute_path = os.path.join(label_path, attribute_labels)
@@ -68,7 +73,7 @@ def countFeaturesByFiles(label_path, attribute_labels):
     return dic_attrib_files, dic_attname_attrib
 
 '''
-def countFileByFeatures(label_path, attribute_labels):
+输入(特征id, 文件名列表)和(特征名称，特征id)的两个哈希表，输出需要处理的正例图片名称的txt
 '''
 
 def outputSelectedFileNames(dic_attrib_files, dic_attname_attrib, output_path, output_file):
@@ -90,7 +95,11 @@ def outputSelectedFileNames(dic_attrib_files, dic_attname_attrib, output_path, o
            count += 1
            print(count)
 
-def generateTrainSetOnFeature(image_path, copy_path, list_path, feature):
+'''
+输入图片路径，目标路径，正例图片名称列表路径，被选择的特征名称，输出目标路径与label的npy文件
+'''
+
+def generateTrainSetOnFeature(image_path, copy_path, list_path, feature, copy=False):
 
     featurelist_path = os.path.join(list_path, feature + ".txt")
 
@@ -122,18 +131,20 @@ def generateTrainSetOnFeature(image_path, copy_path, list_path, feature):
                 s = file.readline()
                 labels.append(1.)
                 flag = 'P'
-            #sourceFile = os.path.join(image_path, imglist[i])
-            #distFile = os.path.join(copy_path, imglist[i])
-            #open(distFile, "wb+").write(open(sourceFile, "rb+").read())
+            if copy:
+                sourceFile = os.path.join(image_path, imglist[i])
+                distFile = os.path.join(copy_path, imglist[i])
+                open(distFile, "wb+").write(open(sourceFile, "rb+").read())
             i += 1
             print("No." + str(i) + ' ' + flag)
         print("Positive:" + str(positive))
 
         while negative < positive:
 
-            #sourceFile = os.path.join(image_path, imglist[i])
-            #distFile = os.path.join(copy_path, imglist[i])
-            #open(distFile, "wb+").write(open(sourceFile, "rb+").read())
+            if copy:
+                sourceFile = os.path.join(image_path, imglist[i])
+                distFile = os.path.join(copy_path, imglist[i])
+                open(distFile, "wb+").write(open(sourceFile, "rb+").read())
             labels.append(0.)
             i += 1
             negative += 1
