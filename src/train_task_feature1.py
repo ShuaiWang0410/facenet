@@ -168,6 +168,7 @@ def main(args):
 
             image.set_shape((args.image_size, args.image_size, 3))
             train_images.append(tf.image.per_image_standardization(image))
+            print("No." + str(i) + " finished")
         print("<----------------Finish loading all training images---------------->")
 
         # ------------------------ SYSTEM CONFIGURATION ------------------------------------
