@@ -20,7 +20,7 @@ import lfw
 import celeba
 
 feature_name = "Wearing_Lipstick"
-select_feature_image_path = "/Volumes/新加卷"
+select_feature_image_path = "/home/ec2-user/Wearing_Lipstick"
 
 train_images = []
 train_labels = []
@@ -238,7 +238,7 @@ def parse_argument(argv):
                         default=0.98)  # ShuaiWang set 1 to 2
     parser.add_argument('--pretrained_model', type=str,
                         help='Load a pretrained model before training starts.',
-                        default="~/sw-facenet-cp-models/facenet/20181014-054322/model-20181014-054322.ckpt-89685")  # ShuaiWang 10-20:add pretrained models
+                        default="/Home/ec2-user/20180402-114759/model-20180402-114759.ckpt-275")  # ShuaiWang 10-20:add pretrained models
     parser.add_argument('--data_dir', type=str,
                         help='Path to the data directory containing aligned face patches.',
                         # default='~/datasets/casia/casia_maxpy_mtcnnalign_182_160') # Shuai: use mine
