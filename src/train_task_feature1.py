@@ -20,15 +20,13 @@ import lfw
 import celeba
 
 feature_name = "Wearing_Lipstick"
-select_feature_image_path = "/home/ec2-user/Wearing_Lipstick"
+select_feature_image_path = "/home/ec2-user/input_imgs"
 
 train_images = []
 train_labels = []
 train_size = -1
 cur_start = -1
 batch_size = -1
-
-
 
 def load_pretrain_checkpoint(sess, checkpoint_filename):
     facenet_reader = tf.train.NewCheckpointReader(checkpoint_filename)
