@@ -88,7 +88,7 @@ def save_variables_and_metagraph(sess, saver, summary_writer, model_dir, model_n
     summary_writer.add_summary(summary, step)
 
 def main(args):
-
+    print("<------------ Start Running ----------------->")
     global train_images, train_labels
     global train_size, batch_size
 
