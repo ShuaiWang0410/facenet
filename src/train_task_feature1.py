@@ -1,5 +1,3 @@
-import importlib
-
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -21,6 +19,9 @@ import lfw
 
 import celeba
 
+feature_name = "Wearing_Lipstick"
+select_feature_image_path = "/Volumes/新加卷"
+
 train_images = []
 train_labels = []
 train_size = -1
@@ -38,7 +39,7 @@ def load_pretrain_checkpoint(sess, checkpoint_filename):
     g = tf.get_default_graph()
     for key in var_to_shape_map:
         restored_tensor_list.append(g.get_tensor_by_name(key))
-    saver = tf.train.saver(restored_tensor_list)
+    saver = tf.train.Saver(restored_tensor_list)
     saver.restore(sess, checkpoint_filename)
 
 def next_batch():
@@ -64,6 +65,28 @@ def next_batch():
 
     return np.ndarray(buffer=image_batch), label_batch
 
+def save_variables_and_metagraph(sess, saver, summary_writer, model_dir, model_name, step):
+    # Save the model checkpoint
+    print('Saving variables')
+    start_time = time.time()
+    checkpoint_path = os.path.join(model_dir, 'model-%s.ckpt' % model_name)
+    saver.save(sess, checkpoint_path, global_step=step, write_meta_graph=False)
+    save_time_variables = time.time() - start_time
+    print('Variables saved in %.2f seconds' % save_time_variables)
+    metagraph_filename = os.path.join(model_dir, 'model-%s.meta' % model_name)
+    save_time_metagraph = 0
+    if not os.path.exists(metagraph_filename):
+        print('Saving metagraph')
+        start_time = time.time()
+        saver.export_meta_graph(metagraph_filename)
+        save_time_metagraph = time.time() - start_time
+        print('Metagraph saved in %.2f seconds' % save_time_metagraph)
+    summary = tf.Summary()
+    #pylint: disable=maybe-no-member
+    summary.value.add(tag='time/save_variables', simple_value=save_time_variables)
+    summary.value.add(tag='time/save_metagraph', simple_value=save_time_metagraph)
+    summary_writer.add_summary(summary, step)
+
 def main(args):
 
     global train_images, train_labels
@@ -88,30 +111,48 @@ def main(args):
     # write current hyperparameters to a file
     facenet.write_arguments_to_file(args, os.path.join(log_dir, 'arguments.txt'))
 
-    train_filenames, train_labels = celeba.getTrainingData()
+    train_filenames, train_labels = celeba.getTrainingData(feature_name, select_feature_image_path)
     train_size = len(train_filenames)
+    print("Training set size is " + str(train_size))
+    train_labels = tf.one_hot(train_labels, depth=2)
+    train_labels = tf.reshape(train_labels, shape=(train_size, 2))
+    train_labels = tf.Session().run(train_labels);
     batch_size = args.batch_size
 
     with tf.Graph().as_default():
 
-        mt_network = importlib.import_module(args.model_def)
-
         # global_step of training
-        global_step = tf.Variable(0, trainable=False)
+        g_step = tf.Variable(0, trainable=False, dtype=tf.int64)
 
+        # set the random seed
+        tf.set_random_seed(args.seed)
+
+        mt_network = importlib.import_module(args.model_def)
 
         image_size = tf.Variable(args.image_size, trainable=False)
 
-        image_batch_ph = tf.placeholder(tf.int32, shape=(None, image_size, image_size, 3), name='image_batch')
-        label_batch_ph = tf.placeholder(tf.int32, shape=(None, 2), name='label_batch')
+        image_batch_ph = tf.placeholder(tf.float32, shape=(None, args.image_size, args.image_size, 3), name='image_batch')
+        label_batch_ph = tf.placeholder(tf.float32, shape=(None, 2), name='label_batch')
 
-        learning_rate_ph = tf.placeholder(tf.float32, name='learning rate')
+        learning_rate_ph = tf.placeholder(tf.float32, name='learning_rate')
         phase_train_ph = tf.placeholder(tf.bool, name='phase_train')
 
-        learning_rate = tf.train.exponential_decay(learning_rate_ph, global_step,
+        learning_rate = tf.train.exponential_decay(learning_rate_ph, g_step,
                                                    args.learning_rate_decay_epochs * args.epoch_size,
                                                    args.learning_rate_decay_factor, staircase=True)
         tf.summary.scalar('learning_rate', learning_rate)
+
+        prelogits, feature1, _ = mt_network.inference(image_batch_ph, args.keep_probability,
+                                                      phase_train=phase_train_ph,
+                                                      bottleneck_layer_size=args.embedding_size,
+                                                      weight_decay=args.weight_decay)
+
+        loss = tf.nn.softmax_cross_entropy_with_logits_v2(labels=label_batch_ph, logits=feature1)
+        cross_entropy = tf.reduce_mean(loss)
+        train_op = tf.train.AdagradDAOptimizer(learning_rate, global_step=g_step).minimize(cross_entropy)
+
+        correct_prediction = tf.equal(tf.argmax(feature1, 1), tf.argmax(label_batch_ph, 1))
+        accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
         for i in range(train_size):
             filename = train_filenames[i]
@@ -127,19 +168,7 @@ def main(args):
 
             image.set_shape((args.image_size, args.image_size, 3))
             train_images.append(tf.image.per_image_standardization(image))
-
-
-        prelogits, feature1, _ = mt_network.inference(image_batch_ph, args.keep_probability,
-                                                      phase_train=phase_train_ph,
-                                                      bottleneck_layer_size=args.embedding_size,
-                                                      weight_decay=args.weight_decay)
-
-        loss = tf.nn.softmax_cross_entropy_with_logits_v2(labels=label_batch_ph, logits=feature1)
-        cross_entropy = tf.reduce_mean(loss)
-        train_op = tf.train.AdagradDAOptimizer(learning_rate).minimize(cross_entropy)
-
-        correct_prediction = tf.equal(tf.argmax(feature1, 1), tf.argmax(label_batch_ph, 1))
-        accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+        print("<----------------Finish loading all training images---------------->")
 
         # ------------------------ SYSTEM CONFIGURATION ------------------------------------
 
@@ -163,9 +192,11 @@ def main(args):
 
             if args.pretrained_model:
                 load_pretrain_checkpoint(sess, args.pretrained_model)
+                print("<----------------Finish loading pretrained model---------------->")
 
             epoch = 0
-
+            step = 0
+            print("<----------------Start training---------------->")
             while epoch < args.max_nrof_epochs:
 
                 step = 0
@@ -173,7 +204,7 @@ def main(args):
                 while step < args.epoch_size:
 
                     image_batch_, label_batch_ = next_batch();
-                    sess.run(train_op, feed_dict={image_batch_ph: image_batch_, label_batch_ph: label_batch_})
+                    sess.run(train_op, feed_dict={image_batch_ph: image_batch_, label_batch_ph: label_batch_, learning_rate_ph:args.learning_rate})
 
                     print("Now running accuracy evaluation")
                     if step % 10 == 0:
@@ -182,6 +213,7 @@ def main(args):
                     step += 1
 
                 epoch += 1
+                print("<----------------No." + str(epoch) + " Finished---------------->")
 
                 '''
                 train(args, sess, train_set, epoch, image_paths_ph, labels_ph, labels_batch,
@@ -189,6 +221,7 @@ def main(args):
                     embeddings, total_loss, train_op, summary_op, summary_writer, args.learning_rate_schedule_file,
                     args.embedding_size, anchor, positive, negative, triplet_loss)
                 '''
+            save_variables_and_metagraph(sess, saver, summary_writer, model_dir, subdir, step)
 
 def parse_argument(argv):
     parser = argparse.ArgumentParser()
@@ -209,16 +242,16 @@ def parse_argument(argv):
     parser.add_argument('--data_dir', type=str,
                         help='Path to the data directory containing aligned face patches.',
                         # default='~/datasets/casia/casia_maxpy_mtcnnalign_182_160') # Shuai: use mine
-                        default='/home/ubuntu/CASIA-WebFace-Align-2000People')
+                        default='/home/ec2-user/output_align')
     parser.add_argument('--model_def', type=str,
                         help='Model definition. Points to a module containing the definition of the inference graph.',
-                        default='models.inception_resnet_v1')
+                        default='models.inception_resnet_v1_mt')
     parser.add_argument('--max_nrof_epochs', type=int,
                         # help='Number of epochs to run.', default=500) # Shuai: shrink the max epoch
                         help='Number of epochs to run.', default=80)
     parser.add_argument('--batch_size', type=int,
                         # help='Number of images to process in a batch.', default=90) # Shuai: shrink the batch_size to 50
-                        help='Number of images to process in a batch.', default=90)
+                        help='Number of images to process in a batch.', default=50)
     parser.add_argument('--image_size', type=int,
                         # help='Image size (height, width) in pixels.', default=160) # Shuai: use our size
                         help='Image size (height, width) in pixels.', default=182)

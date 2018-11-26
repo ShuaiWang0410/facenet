@@ -454,7 +454,7 @@ def parse_arguments(argv):
         # default='~/datasets/casia/casia_maxpy_mtcnnalign_182_160') # Shuai: use mine
         default='/home/ubuntu/CASIA-WebFace-Align-2000People')
     parser.add_argument('--model_def', type=str,
-        help='Model definition. Points to a module containing the definition of the inference graph.', default='models.inception_resnet_v1')
+        help='Model definition. Points to a module containing the definition of the inference graph.', default='models.inception_resnet_v1_mt')
     parser.add_argument('--max_nrof_epochs', type=int,
         # help='Number of epochs to run.', default=500) # Shuai: shrink the max epoch
         help='Number of epochs to run.', default=80)

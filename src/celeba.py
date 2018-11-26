@@ -166,15 +166,20 @@ def getTrainingData(feature_name, select_feature_image_path):
     images_path = os.path.join(select_feature_image_path,feature_name)
     images = os.listdir(images_path)
     images = sorted(images)
-    images = images[:-1]
-    for i in range(len(images)):
-        images[i] = os.path.join(images_path, images[i])
     labels_path = os.path.join(images_path, feature_name)
     labels_path = os.path.join(labels_path, feature_name + '.npy')
     labels = np.load(labels_path)
+    new_labels = []
 
-    return images, labels
-
+    images = images[:-1]
+    label_pos = images[-1]
+    for i in range(len(images)):
+        index = int(images[i].split('.')[0])
+        images[i] = os.path.join(images_path, images[i])
+        new_labels.append(labels[index-1][0])
+    x = np.array(new_labels, dtype=np.float32)
+    new_labels = np.ndarray(shape=(len(new_labels),1), buffer=x, dtype=np.float32)
+    return images, new_labels
 
 
 #---------------------------------------------------------------------------------------
@@ -185,7 +190,7 @@ def getTrainingData(feature_name, select_feature_image_path):
 #print({i:len(dic_attrib_files[i]) for i in dic_attrib_files.keys()})
 #outputSelectedFileNames(dic_attrib_files, dic_attname_attrib, output_path, feature_name)
 #generateTrainSetOnFeature(image_path, select_feature_image_path, output_path, feature_name)
-getTrainingData(feature_name, select_feature_image_path)
+#getTrainingData(feature_name, select_feature_image_path)
 #outputSelectedFileNames()
 
     
