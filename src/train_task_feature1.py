@@ -202,7 +202,7 @@ def main(args):
         learning_rate_ph = tf.placeholder(tf.float32, name='learning_rate')
         phase_train_ph = tf.placeholder(tf.bool, name='phase_train')
 
-        input_queue = data_flow_ops.FIFOQueue(capacity=100000,
+        input_queue = data_flow_ops.FIFOQueue(capacity=10000,
                                               dtypes=[tf.string, tf.int32],
                                               shapes=[(1,), (1,)],
                                               shared_name=None, name=None)
@@ -314,7 +314,7 @@ def main(args):
 
                     image_batch_, label_batch_ = next_batch()
                     print("Step %d of Epoch %d, batch size %s" % (step, epoch, image_batch_[0]))
-                    sess.run(enqueue_op, feed_dict={image_path_ph:image_batch_, label_ph: label_batch_})
+                    sess.run(enqueue_op, feed_dict={image_path_ph:train_fnames, label_ph: train_labels})
                     los, _, lab = sess.run([loss, train_op, labels_batch], feed_dict={learning_rate_ph:args.learning_rate, phase_train_ph:True})
 
                     summary = tf.Summary()
