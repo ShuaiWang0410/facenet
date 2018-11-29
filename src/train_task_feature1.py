@@ -245,6 +245,7 @@ def main(args):
         labels_batch = toOneHot(labels_batch, batch_size)
 
         #Test queue
+
         test_queue = data_flow_ops.FIFOQueue(capacity=10000,
                                               dtypes=[tf.string, tf.int32],
                                               shapes=[(1,), (1,)],
@@ -264,17 +265,15 @@ def main(args):
             test_images_and_labels.append([images, label])
 
         test_image_batch, test_labels_batch = tf.train.batch_join(
-            images_and_labels, batch_size= batch_size * ratios[0],
+            test_images_and_labels, batch_size= batch_size * ratios[0],
             shapes=[(image_size_o, image_size_o, 3), ()], enqueue_many=True,
-            capacity=4 * nrof_preprocess_threads * batch_size * ratios[0],
+            capacity=4 * nrof_acc_preprocess_threads * batch_size * ratios[0],
             allow_smaller_final_batch=True)
         test_image_batch = tf.identity(test_image_batch, 'image_batch')
         test_image_batch = tf.identity(test_image_batch, 'input')
         test_labels_batch = tf.identity(test_labels_batch, 'label_batch')
         test_labels_batch = toOneHot(test_labels_batch, batch_size * ratios[0])
         #
-
-
 
         learning_rate = tf.train.exponential_decay(learning_rate_ph, g_step,
                                                    args.learning_rate_decay_epochs * args.epoch_size,
@@ -294,11 +293,7 @@ def main(args):
         accuracy_val = tf.reduce_mean(tf.cast(correct_prediction_val, tf.float32))
 
         #
-        _, test_feature1, _ = mt_network.inference(test_image_batch, args.keep_probability,
-                                                      phase_train=phase_train_ph,
-                                                      bottleneck_layer_size=args.embedding_size,
-                                                      weight_decay=args.weight_decay)
-        correct_prediction = tf.equal(tf.argmax(test_feature1, 1), tf.argmax(test_labels_batch, 1))
+        correct_prediction = tf.equal(tf.argmax(feature1, 1), tf.argmax(test_labels_batch, 1))
         accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
         #
 
@@ -381,6 +376,8 @@ def main(args):
                 print("<----------------Start evaluating---------------->")
 
                 sess.run(enqueue_acc_op, feed_dict={image_path_ph: test_fnames, label_ph: test_labels})
+                #sess.run(enqueue_op, feed_dict={image_path_ph: test_fnames, label_ph: test_labels})
+                sess.run(feature1, feed_dict={image_batch:test_image_batch})
                 accuracy_m, _ = sess.run([accuracy, test_labels_batch], feed_dict={phase_train_ph: False})
                 summary = tf.Summary()
                 summary.value.add(tag='accuracy_m', simple_value=accuracy_m)
