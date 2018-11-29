@@ -243,16 +243,16 @@ def inception_resnet_v1(inputs, is_training=True,
                                        scope='Dropout')
 
                     task_1 = slim.dropout(net, dropout_keep_prob, is_training=is_training,
-                                             scope='Dropout')
+                                             scope='Dropout_2')
           
-                    end_points['PreLogitsFlatten-embedding'] = main_task
+                    end_points['PreLogitsFlatten'] = main_task
                     end_points['PreLogitsFlatten-feature1'] = task_1
                 
                 embedding = slim.fully_connected(main_task, bottleneck_layer_size, activation_fn=None,
-                        scope='Bottleneck_1', reuse=False)
+                        scope='Bottleneck', reuse=False)
 
                 feature1 = slim.fully_connected(task_1, 2, activation_fn=None,
-                                                 scope='Bottleneck_2', reuse=False)
+                                                 scope='Bottleneck_task1', reuse=False)
   
     return embedding, feature1, end_points
 

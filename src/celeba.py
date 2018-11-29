@@ -3,15 +3,15 @@ import numpy as np
 
 all_images_path = ""
 
-label_path = "/Volumes/新加卷/celebA-labels"
+label_path = "/Volumes/PowerExtension/celebA-labels"
 identity_labels = "identity_CelebA.txt"
 attribute_labels = "list_attr_celeba.txt"
 
-output_path = "/Volumes/新加卷/celebA-labels-output-lists"
+output_path = "/Volumes/PowerExtension/celebA-labels-output-lists"
 feature_name = "Wearing_Lipstick"
 
-image_path = "/Volumes/新加卷/img_align_celeba"
-select_feature_image_path = "/Volumes/新加卷"
+image_path = "/Volumes/PowerExtension/img_align_celeba"
+select_feature_image_path = "/Volumes/PowerExtension"
 
 #---------------------------------------------------------------------------------------
 
@@ -161,7 +161,7 @@ def generateTrainSetOnFeature(image_path, copy_path, list_path, feature, copy=Fa
     labels = np.ndarray(shape =(x.shape[0],1), buffer=x, dtype=np.int32)
     np.save(file=feature_label_path, arr=labels)
 
-def getTrainingData(feature_name, select_feature_image_path):
+def getData(feature_name, select_feature_image_path):
 
     images_path = os.path.join(select_feature_image_path,feature_name)
     images = os.listdir(images_path)
@@ -177,10 +177,78 @@ def getTrainingData(feature_name, select_feature_image_path):
         index = int(images[i].split('.')[0])
         images[i] = os.path.join(images_path, images[i])
         new_labels.append(labels[index-1][0])
-    x = np.array(new_labels, dtype=np.float32)
-    new_labels = np.ndarray(shape=(len(new_labels),1), buffer=x, dtype=np.float32)
+    x = np.array(new_labels, dtype=np.int32)
+    new_labels = np.ndarray(shape=(len(new_labels),1), buffer=x, dtype=np.int32)
     return images, new_labels
 
+def cAndShuffle(col1, col2):
+
+    a = np.array(col1, dtype=np.int32)
+    b = np.array(col2, dtype=np.int32)
+
+    a = np.ndarray(shape=(a.shape[0],1), dtype=np.int32, buffer=a)
+    b = np.ndarray(shape=(b.shape[0],1), dtype=np.int32, buffer=b)
+
+    c = np.concatenate((a, b), axis=1)
+    np.random.shuffle(c)
+
+    return c[:,0], c[:,1]
+
+def splitData(fnames, labels, factors, base):
+
+    labels.shape = (labels.shape[0],)
+    xlabels = labels.tolist()
+
+    test_factor = factors[0]
+    val_factor = factors[1]
+    train_factor = factors[2]
+
+    test_amount = test_factor * base // 2
+    val_amount = val_factor * base // 2
+    train_amount = train_factor * base // 2
+    
+    tests = [0,0]
+    vals = [0,0]
+    trains = [0,0]
+
+    test_fnames = []
+    train_fnames = []
+    val_fnames = []
+
+    test_labels = []
+    train_labels = []
+    val_labels = []
+
+    l_fnames = len(fnames)
+    for i in range(l_fnames):
+        t = labels[i]
+        m = int(t)
+        if (tests[m] < test_amount):
+            test_fnames.append(i)
+            test_labels.append(t)
+            tests[m] += 1
+        elif (vals[m] < val_amount):
+            val_fnames.append(i)
+            val_labels.append(t)
+            vals[m] += 1
+        elif (trains[m] < train_amount):
+            train_fnames.append(i)
+            train_labels.append(t)
+            trains[m] += 1
+    test_fnames, test_labels = cAndShuffle(test_fnames, test_labels)
+    val_fnames, val_labels = cAndShuffle(val_fnames, val_labels)
+    train_fnames, train_labels = cAndShuffle(train_fnames, train_labels)
+    real_test_fnames = []
+    real_val_fnames = []
+    real_train_fnames = []
+    for i in test_fnames:
+        real_test_fnames.append(fnames[int(i)])
+    for i in val_fnames:
+        real_val_fnames.append(fnames[int(i)])
+    for i in train_fnames:
+        real_train_fnames.append(fnames[int(i)])
+
+    return real_test_fnames, test_labels.tolist(), real_val_fnames, val_labels.tolist(), real_train_fnames, train_labels.tolist()
 
 #---------------------------------------------------------------------------------------
 

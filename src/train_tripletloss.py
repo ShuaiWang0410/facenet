@@ -173,7 +173,6 @@ def main(args):
 
             if args.pretrained_model:
                 print('Restoring pretrained model: %s' % args.pretrained_model)
-                saver.restore(sess, os.path.expanduser(args.pretrained_model))
 
             # Training and validation loop
             epoch = 0
@@ -182,9 +181,9 @@ def main(args):
 
                 # ShuaiWang milestones
 
-                if epoch > 0:
-                    ms_file = open("/home/ubuntu/sw-facenet-milestones/No." + str(epoch) +" epoch.txt", "w+")
-                    ms_file.close()
+                #if epoch > 0:
+                    #ms_file = open("/home/ubuntu/sw-facenet-milestones/No." + str(epoch) +" epoch.txt", "w+")
+                    #ms_file.close()
 
                 # ShuaiWang end
 
@@ -206,8 +205,8 @@ def main(args):
                             args.lfw_nrof_folds, log_dir, step, summary_writer, args.embedding_size)
     # ShuaiWang write success mark
 
-    ms_file = open("/home/ubuntu/sw-facenet-milestones/facenet_1000people_finishmark.txt", "w+")
-    ms_file.close()
+    #ms_file = open("/home/ubuntu/sw-facenet-milestones/facenet_1000people_finishmark.txt", "w+")
+    #ms_file.close()
 
     # ShuaiWang success end
 
@@ -452,7 +451,7 @@ def parse_arguments(argv):
     parser.add_argument('--data_dir', type=str,
         help='Path to the data directory containing aligned face patches.',
         # default='~/datasets/casia/casia_maxpy_mtcnnalign_182_160') # Shuai: use mine
-        default='/home/ubuntu/CASIA-WebFace-Align-2000People')
+        default='/Volumes/PowerExtension/Wearing_Lipstick_align/Wearing_Lipstick')
     parser.add_argument('--model_def', type=str,
         help='Model definition. Points to a module containing the definition of the inference graph.', default='models.inception_resnet_v1_mt')
     parser.add_argument('--max_nrof_epochs', type=int,
