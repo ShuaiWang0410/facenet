@@ -156,7 +156,7 @@ def main(args):
     # facenet.write_arguments_to_file(args, os.path.join(log_dir, 'arguments.txt'))
 
     fnames, labels = celeba.getData(feature_name, select_feature_image_path)
-    test_fnames, test_labels, val_fnames, val_labels, train_fnames, train_labels = celeba.splitData(fnames, labels, [200, 6, 1400], args.batch_size)
+    test_fnames, test_labels, val_fnames, val_labels, train_fnames, train_labels = celeba.splitData(fnames, labels, [2, 6, 1400], args.batch_size)
 
     # Shuai: required by validation and evaluation
     '''
