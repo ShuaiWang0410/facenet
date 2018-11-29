@@ -159,11 +159,12 @@ def main(args):
     test_fnames, test_labels, val_fnames, val_labels, train_fnames, train_labels = celeba.splitData(fnames, labels, [200, 6, 1400], args.batch_size)
 
     # Shuai: required by validation and evaluation
+    '''
     train_fnames = np.array(train_fnames)
     train_fnames.shape = (train_fnames.shape[0], 1)
     train_labels = np.array(train_labels)
     train_labels.shape = (train_labels.shape[0], 1)
-
+    '''
     val_fnames = np.array(val_fnames)
     val_fnames.shape = (val_fnames.shape[0], 1)
     val_labels = np.array(val_labels)
@@ -314,7 +315,8 @@ def main(args):
 
                     image_batch_, label_batch_ = next_batch()
                     print("Step %d of Epoch %d, batch size %s" % (step, epoch, image_batch_[0]))
-                    sess.run(enqueue_op, feed_dict={image_path_ph:train_fnames, label_ph: train_labels})
+                    #sess.run(enqueue_op, feed_dict={image_path_ph:train_fnames, label_ph: train_labels})
+                    sess.run(enqueue_op, feed_dict={image_path_ph: image_batch_, label_ph: label_batch_})
                     los, _, lab = sess.run([loss, train_op, labels_batch], feed_dict={learning_rate_ph:args.learning_rate, phase_train_ph:True})
 
                     summary = tf.Summary()
@@ -392,7 +394,7 @@ def parse_argument(argv):
                         # help='Number of images per person.', default=40) # Shuai: use mine
                         help='Number of images per person', default=40)'''
     parser.add_argument('--epoch_size', type=int,
-                        help='Number of batches per epoch.', default=1400)
+                        help='Number of batches per epoch.', default=140)
     '''parser.add_argument('--alpha', type=float,
                         help='Positive to negative triplet distance margin.', default=0.2)'''
     parser.add_argument('--embedding_size', type=int,
