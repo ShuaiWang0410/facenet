@@ -203,7 +203,7 @@ def main(args):
                                               shared_name=None, name=None)
         enqueue_op = input_queue.enqueue_many([image_path_ph, label_ph])
 
-        nrof_preprocess_threads = 2
+        nrof_preprocess_threads = 4
         images_and_labels = []
         for _ in range(nrof_preprocess_threads):
             images = []
@@ -334,8 +334,8 @@ def main(args):
                 accuracy_m, _ = sess.run([accuracy, labels_batch], feed_dict={phase_train_ph: False})
                 summary = tf.Summary()
                 summary.value.add(tag='accuracy_m', simple_value=accuracy_m)
-                print("Step %d of Epoch %d, the accuracy is %g" % (step, epoch, accuracy_m))
-
+                print("Epoch %d, the accuracy is %g" % (epoch, accuracy_m))
+                print("<----------------End evaluating---------------->")
 
                 '''
                 train(args, sess, train_set, epoch, image_paths_ph, labels_ph, labels_batch,
