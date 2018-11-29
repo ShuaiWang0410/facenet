@@ -21,8 +21,8 @@ import lfw
 import celeba
 
 feature_name = "Wearing_Lipstick"
-# select_feature_image_path = "/home/ec2-user/output_imgs"
-select_feature_image_path = "/Volumes/PowerExtension/Wearing_Lipstick_align"
+select_feature_image_path = "/home/ec2-user"
+# select_feature_image_path = "/Volumes/PowerExtension/Wearing_Lipstick_align"
 
 
 train_fnames = ''
@@ -352,17 +352,18 @@ def parse_argument(argv):
 
     parser.add_argument('--logs_base_dir', type=str,
                         # help='Directory where to write event logs.', default='~/logs/facenet') # ShuaiWang: use mine
-                        help='Directory where to write event logs.', default='~/sw-facenet-logs/facenet')
+                        help='Directory where to write event logs.', default='~/sw-facenet-project2/logs')
     parser.add_argument('--models_base_dir', type=str,
                         # help='Directory where to write trained models and checkpoints.', default='~/models/facenet') # ShuaiWang: use mine
                         help='Directory where to write trained models and checkpoints.',
-                        default='~/sw-facenet-cp-models/facenet')
+                        default='~/sw-facenet-project2/models')
     parser.add_argument('--gpu_memory_fraction', type=float,
                         help='Upper bound on the amount of GPU memory that will be used by the process.',
                         default=0.98)  # ShuaiWang set 1 to 2
     parser.add_argument('--pretrained_model', type=str,
                         help='Load a pretrained model before training starts.',
-                        default="/Volumes/PowerExtension/20180402-114759/model-20180402-114759.ckpt-275")  # ShuaiWang 10-20:add pretrained models
+                        #default="/Volumes/PowerExtension/20180402-114759/model-20180402-114759.ckpt-275")  # ShuaiWang 10-20:add pretrained models
+                        default="/home/ec2-user/20180402-114759/model-20180402-114759.ckpt-275")  # ShuaiWang 10-20:add pretrained models
     parser.add_argument('--data_dir', type=str,
                         help='Path to the data directory containing aligned face patches.',
                         # default='~/datasets/casia/casia_maxpy_mtcnnalign_182_160') # Shuai: use mine
@@ -419,15 +420,18 @@ def parse_argument(argv):
                         help='Random seed.', default=666)
     parser.add_argument('--learning_rate_schedule_file', type=str,
                         help='File containing the learning rate schedule that is used when learning_rate is set to to -1.',
-                        default='/home/ubuntu/ShuaiWang/sw-face-net/facenet/data/learning_rate_schedule.txt')
+                        #default='/home/ubuntu/ShuaiWang/sw-face-net/facenet/data/learning_rate_schedule.txt')
+                        )
 
     # Parameters for validation on LFW
     parser.add_argument('--lfw_pairs', type=str,
                         help='The file containing the pairs to use for validation.',
-                        default='/home/ubuntu/ShuaiWang/sw-face-net/facenet/data/pairs.txt')  # Shuai: use absolute path
+                        #default='/home/ubuntu/ShuaiWang/sw-face-net/facenet/data/pairs.txt')  # Shuai: use absolute path
+                        )
     parser.add_argument('--lfw_dir', type=str,
                         help='Path to the data directory containing aligned face patches.',
-                        default='/home/ubuntu/lfw-align')  # ShuaiWang: use mine
+                        #default='/home/ubuntu/lfw-align')  # ShuaiWang: use mine
+                        )
     parser.add_argument('--lfw_nrof_folds', type=int,
                         help='Number of folds to use for cross validation. Mainly used for testing.', default=10)
     return parser.parse_args(argv)
