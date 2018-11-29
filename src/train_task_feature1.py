@@ -204,7 +204,7 @@ def main(args):
         learning_rate_ph = tf.placeholder(tf.float32, name='learning_rate')
         phase_train_ph = tf.placeholder(tf.bool, name='phase_train')
 
-        input_queue = data_flow_ops.FIFOQueue(capacity=10000,
+        input_queue = data_flow_ops.FIFOQueue(capacity=100000,
                                               dtypes=[tf.string, tf.int32],
                                               shapes=[(1,), (1,)],
                                               shared_name=None, name=None)
