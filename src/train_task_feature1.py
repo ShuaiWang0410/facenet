@@ -159,6 +159,11 @@ def main(args):
     test_fnames, test_labels, val_fnames, val_labels, train_fnames, train_labels = celeba.splitData(fnames, labels, [200, 6, 1400], args.batch_size)
 
     # Shuai: required by validation and evaluation
+    train_fnames = np.array(train_fnames)
+    train_fnames.shape = (train_fnames.shape[0], 1)
+    train_labels = np.array(train_labels)
+    train_labels.shape = (train_labels.shape[0], 1)
+
     val_fnames = np.array(val_fnames)
     val_fnames.shape = (val_fnames.shape[0], 1)
     val_labels = np.array(val_labels)
@@ -175,7 +180,7 @@ def main(args):
     #val_labels = toOneHot(val_labels)
     #train_labels = toOneHot(train_labels)
 
-    train_size = len(train_fnames)
+    train_size = train_fnames.shape[0]
     print("Training set size is " + str(train_size))
     batch_size = args.batch_size
     image_size_o = args.image_size
@@ -197,7 +202,7 @@ def main(args):
         learning_rate_ph = tf.placeholder(tf.float32, name='learning_rate')
         phase_train_ph = tf.placeholder(tf.bool, name='phase_train')
 
-        input_queue = data_flow_ops.FIFOQueue(capacity=10000,
+        input_queue = data_flow_ops.FIFOQueue(capacity=100000,
                                               dtypes=[tf.string, tf.int32],
                                               shapes=[(1,), (1,)],
                                               shared_name=None, name=None)
