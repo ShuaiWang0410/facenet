@@ -181,7 +181,8 @@ def main(args):
     #val_labels = toOneHot(val_labels)
     #train_labels = toOneHot(train_labels)
 
-    train_size = train_fnames.shape[0]
+    #train_size = train_fnames.shape[0]
+    train_size = len(train_fnames)
     print("Training set size is " + str(train_size))
     batch_size = args.batch_size
     image_size_o = args.image_size
