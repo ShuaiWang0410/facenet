@@ -22,7 +22,7 @@ import celeba
 
 feature_name = "Wearing_Lipstick"
 select_feature_image_path = "/home/ec2-user"
-# select_feature_image_path = "/Volumes/PowerExtension/Wearing_Lipstick_align"
+#select_feature_image_path = "/Volumes/PowerExtension/Wearing_Lipstick_align"
 
 
 train_fnames = ''
@@ -156,7 +156,7 @@ def main(args):
     # facenet.write_arguments_to_file(args, os.path.join(log_dir, 'arguments.txt'))
 
     fnames, labels = celeba.getData(feature_name, select_feature_image_path)
-    ratios = [5, 1, 70]
+    ratios = [200, 1, 700]
     test_fnames, test_labels, val_fnames, val_labels, train_fnames, train_labels = celeba.splitData(fnames, labels, ratios, args.batch_size)
 
     # Shuai: required by validation and evaluation
@@ -199,13 +199,14 @@ def main(args):
         mt_network = importlib.import_module(args.model_def)
 
         # image_size = tf.Variable(args.image_size, trainable=False)
-        image_path_ph = tf.placeholder(tf.string, shape=(None,1), name='image_batch')
-        label_ph = tf.placeholder(tf.int32, shape=(None,1), name='label_batch')
+        image_path_ph = tf.placeholder(tf.string, shape=(None,1)) #, name='image_batch_ph')
+        label_ph = tf.placeholder(tf.int32, shape=(None,1)) # name='label_batch_ph')
+        # image_batch_ph = tf.placeholder(tf.float32, shape=(None, 182, 182, 3))# , name = "network_input")
 
         learning_rate_ph = tf.placeholder(tf.float32, name='learning_rate')
         phase_train_ph = tf.placeholder(tf.bool, name='phase_train')
 
-        input_queue = data_flow_ops.FIFOQueue(capacity=10000,
+        input_queue = data_flow_ops.FIFOQueue(capacity=100000,
                                               dtypes=[tf.string, tf.int32],
                                               shapes=[(1,), (1,)],
                                               shared_name=None, name=None)
@@ -245,13 +246,13 @@ def main(args):
         labels_batch = toOneHot(labels_batch, batch_size)
 
         #Test queue
-
+        '''
         test_queue = data_flow_ops.FIFOQueue(capacity=10000,
                                               dtypes=[tf.string, tf.int32],
                                               shapes=[(1,), (1,)],
                                               shared_name=None, name=None)
         enqueue_acc_op = input_queue.enqueue_many([image_path_ph, label_ph])
-
+        
         nrof_acc_preprocess_threads = 2
         test_images_and_labels = []
         for _ in range(nrof_acc_preprocess_threads):
@@ -269,10 +270,11 @@ def main(args):
             shapes=[(image_size_o, image_size_o, 3), ()], enqueue_many=True,
             capacity=4 * nrof_acc_preprocess_threads * batch_size * ratios[0],
             allow_smaller_final_batch=True)
-        test_image_batch = tf.identity(test_image_batch, 'image_batch')
-        test_image_batch = tf.identity(test_image_batch, 'input')
-        test_labels_batch = tf.identity(test_labels_batch, 'label_batch')
+        test_image_batch = tf.identity(test_image_batch, 'test_image_batch')
+        test_image_batch = tf.identity(test_image_batch, 'test_input')
+        test_labels_batch = tf.identity(test_labels_batch, 'test_label_batch')
         test_labels_batch = toOneHot(test_labels_batch, batch_size * ratios[0])
+        '''
         #
 
         learning_rate = tf.train.exponential_decay(learning_rate_ph, g_step,
@@ -293,8 +295,19 @@ def main(args):
         accuracy_val = tf.reduce_mean(tf.cast(correct_prediction_val, tf.float32))
 
         #
-        correct_prediction = tf.equal(tf.argmax(feature1, 1), tf.argmax(test_labels_batch, 1))
+        '''
+        _, test_feature1, _ = mt_network.inference(test_image_batch, args.keep_probability,
+                                                      phase_train=phase_train_ph,
+                                                      bottleneck_layer_size=args.embedding_size,
+                                                      weight_decay=args.weight_decay)
+        '''
+
+        output_ph = tf.placeholder(tf.float32, shape=(None, 2))
+        # test_labels_ph = tf.placeholder(tf.float32, shape=(None, 2))
+        test_labels_one = toOneHot(test_labels, batch_size * ratios[0])
+        correct_prediction = tf.equal(tf.argmax(output_ph, 1), tf.argmax(test_labels_one, 1))
         accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+
         #
 
         print("<----------------Finish loading all training images---------------->")
@@ -318,6 +331,7 @@ def main(args):
         coord = tf.train.Coordinator()
         tf.train.start_queue_runners(coord=coord, sess=sess)
 
+        # ------------------------ START RUNNING GRAPH ------------------------------------
 
         with sess.as_default():
 
@@ -375,10 +389,19 @@ def main(args):
 
                 print("<----------------Start evaluating---------------->")
 
-                sess.run(enqueue_acc_op, feed_dict={image_path_ph: test_fnames, label_ph: test_labels})
-                #sess.run(enqueue_op, feed_dict={image_path_ph: test_fnames, label_ph: test_labels})
-                sess.run(feature1, feed_dict={image_batch:test_image_batch})
-                accuracy_m, _ = sess.run([accuracy, test_labels_batch], feed_dict={phase_train_ph: False})
+                #sess.run(enqueue_acc_op, feed_dict={image_path_ph: test_fnames, label_ph: test_labels})
+                sess.run(enqueue_op, feed_dict={image_path_ph: test_fnames, label_ph: test_labels})
+                #sess.run([feature1, test_image_batch])
+                base = np.array([])
+                base.shape = (0,2)
+                bn = 0
+                for i in range(ratios[0]):
+                    features = sess.run(feature1, feed_dict={phase_train_ph:False})
+                    print(str(bn) + " test batch out of queue")
+                    base = np.concatenate((base, features))
+                    bn += 1
+
+                accuracy_m, _ = sess.run([accuracy, test_labels_one], feed_dict={output_ph:base})
                 summary = tf.Summary()
                 summary.value.add(tag='accuracy_m', simple_value=accuracy_m)
                 print("Epoch %d, the accuracy is %g" % (epoch, accuracy_m))
@@ -420,7 +443,7 @@ def parse_argument(argv):
                         default='models.inception_resnet_v1_mt')
     parser.add_argument('--max_nrof_epochs', type=int,
                         # help='Number of epochs to run.', default=500) # Shuai: shrink the max epoch
-                        help='Number of epochs to run.', default=2)
+                        help='Number of epochs to run.', default=3)
     parser.add_argument('--batch_size', type=int,
                         # help='Number of images to process in a batch.', default=90) # Shuai: shrink the batch_size to 50
                         help='Number of images to process in a batch.', default=100)
@@ -434,7 +457,7 @@ def parse_argument(argv):
                         # help='Number of images per person.', default=40) # Shuai: use mine
                         help='Number of images per person', default=40)'''
     parser.add_argument('--epoch_size', type=int,
-                        help='Number of batches per epoch.', default=70)
+                        help='Number of batches per epoch.', default=700)
     '''parser.add_argument('--alpha', type=float,
                         help='Positive to negative triplet distance margin.', default=0.2)'''
     parser.add_argument('--embedding_size', type=int,
