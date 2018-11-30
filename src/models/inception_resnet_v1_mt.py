@@ -254,8 +254,14 @@ def inception_resnet_v1(inputs, is_training=True,
                 task_1_1 = slim.fully_connected(task_1, 128, activation_fn=None,
                                                  scope='Bottleneck_task1', reuse=False)
 
-                task_1_2 = slim.fully_connected(task_1_1, 16, activation_fn=None,
+                task_1_2 = slim.fully_connected(task_1_1, 512, activation_fn=None,
                                                 scope='Bottleneck_task1_1', reuse=False)
+
+                task_1_2 = slim.fully_connected(task_1_2, 128, activation_fn=None,
+                                                scope='Bottleneck_task1_3', reuse=False)
+
+                task_1_2 = slim.fully_connected(task_1_2, 16, activation_fn=None,
+                                                scope='Bottleneck_task1_4', reuse=False)
 
                 feature1 = slim.fully_connected(task_1_2, 2, activation_fn=None,
                                                 scope='Bottleneck_task1_2', reuse=False)
