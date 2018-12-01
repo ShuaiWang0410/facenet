@@ -247,7 +247,7 @@ def inception_resnet_v1(inputs, is_training=True,
                 net_2 = slim.fully_connected(net_2, 512, activation_fn=None,
                                                  scope='Fully_2', reuse=False)
 
-                net_2 = slim.fully_connected(net_2, 128, activation_fn=None,
+                net_2 = slim.fully_connected(net_2, 512, activation_fn=None,
                                                  scope='Fully_3', reuse=False)
 
 
