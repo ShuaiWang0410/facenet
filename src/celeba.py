@@ -181,6 +181,27 @@ def getData(feature_name, select_feature_image_path):
     new_labels = np.ndarray(shape=(len(new_labels),1), buffer=x, dtype=np.int32)
     return images, new_labels
 
+def getData40(all_image_path, all_labels_path):
+
+    # images_path = os.path.join(select_feature_image_path,feature_name)
+    images = os.listdir(all_image_path)
+    images = sorted(images)
+    # labels_path = os.path.join(images_path, feature_name)
+    all_labels_path = os.path.join(all_labels_path, 'labels.npy')
+    labels = np.load(all_labels_path)
+    new_labels = []
+
+    images = images[:-1]
+    # label_pos = images[-1]
+    for i in range(len(images)):
+        index = int(images[i].split('.')[0])
+        images[i] = os.path.join(all_image_path, images[i])
+        new_labels.append(labels[index-1])
+    x = np.array(new_labels, dtype=np.float32)
+    new_labels = np.ndarray(shape=(len(new_labels),40), buffer=x, dtype=np.float32)
+    return images, new_labels
+
+
 def cAndShuffle(col1, col2):
 
     a = np.array(col1, dtype=np.int32)
@@ -193,6 +214,78 @@ def cAndShuffle(col1, col2):
     np.random.shuffle(c)
 
     return c[:,0], c[:,1]
+
+def cAndShuffle40(col1, col2):
+
+    a = np.array(col1, dtype=np.int32)
+    b = np.array(col2, dtype=np.float32)
+
+    a = np.ndarray(shape=(a.shape[0],1), dtype=np.int32, buffer=a)
+    b = np.ndarray(shape=(b.shape[0],40), dtype=np.float32, buffer=b)
+
+    c = np.concatenate((a, b), axis=1)
+    np.random.shuffle(c)
+
+    a = c[:,0]
+    b = c[:,1:]
+
+    return a, b
+
+
+def splitData40(fnames, labels, factors, base):
+    labels.shape = (labels.shape[0], 40)
+    xlabels = labels.tolist()
+
+    test_factor = factors[0]
+    val_factor = factors[1]
+    train_factor = factors[2]
+
+    test_amount = test_factor * base
+    val_amount = val_factor * base
+    train_amount = train_factor * base
+
+    tests = 0
+    vals = 0
+    trains = 0
+
+    test_fnames = []
+    train_fnames = []
+    val_fnames = []
+
+    test_labels = []
+    train_labels = []
+    val_labels = []
+
+    l_fnames = len(fnames)
+    for i in range(l_fnames):
+        t = labels[i]
+        if (tests < test_amount):
+            test_fnames.append(i)
+            test_labels.append(t)
+            tests += 1
+        elif (vals < val_amount):
+            val_fnames.append(i)
+            val_labels.append(t)
+            vals += 1
+        elif (trains < train_amount):
+            train_fnames.append(i)
+            train_labels.append(t)
+            trains += 1
+    test_fnames, test_labels = cAndShuffle40(test_fnames, test_labels)
+    val_fnames, val_labels = cAndShuffle40(val_fnames, val_labels)
+    train_fnames, train_labels = cAndShuffle40(train_fnames, train_labels)
+    real_test_fnames = []
+    real_val_fnames = []
+    real_train_fnames = []
+    for i in test_fnames:
+        real_test_fnames.append(fnames[int(i)])
+    for i in val_fnames:
+        real_val_fnames.append(fnames[int(i)])
+    for i in train_fnames:
+        real_train_fnames.append(fnames[int(i)])
+
+    return real_test_fnames, test_labels.tolist(), real_val_fnames, val_labels.tolist(), real_train_fnames, train_labels.tolist()
+
 
 def splitData(fnames, labels, factors, base):
 
