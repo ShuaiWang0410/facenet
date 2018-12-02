@@ -170,7 +170,7 @@ def main(args):
                                                                                                     args.batch_size)
     '''
     fnames, labels = celeba.getData40(select_feature_image_path, all_labels_path)
-    ratios = [1, 1, 3]
+    ratios = [100, 1, 500]
     test_fnames, test_labels, val_fnames, val_labels, train_fnames, train_labels = celeba.splitData40(fnames, labels,
                                                                                                     ratios,
                                                                                                     args.batch_size)
@@ -372,10 +372,12 @@ def main(args):
                         val_m = np.mean(val_m)
                         summary.value.add(tag='val_m', simple_value=val_m)
                         print("Step %d of Epoch %d, the validation rate is %g" % (l_step, epoch, val_m))
+
+                    summary_writer.add_summary(summary, step)
                     step += 1
                     l_step += 1
 
-                    summary_writer.add_summary(summary, step)
+
 
                 epoch += 1
                 print("<----------------No." + str(epoch) + " Epoch Finished---------------->")
@@ -452,7 +454,7 @@ def parse_argument(argv):
                         # help='Number of images per person.', default=40) # Shuai: use mine
                         help='Number of images per person', default=40)'''
     parser.add_argument('--epoch_size', type=int,
-                        help='Number of batches per epoch.', default=3)
+                        help='Number of batches per epoch.', default=500)
     '''parser.add_argument('--alpha', type=float,
                         help='Positive to negative triplet distance margin.', default=0.2)'''
     parser.add_argument('--embedding_size', type=int,
