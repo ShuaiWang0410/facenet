@@ -170,7 +170,7 @@ def main(args):
                                                                                                     args.batch_size)
     '''
     fnames, labels = celeba.getData40(select_feature_image_path, all_labels_path)
-    ratios = [200, 1, 700]
+    ratios = [50, 1, 100]
     test_fnames, test_labels, val_fnames, val_labels, train_fnames, train_labels = celeba.splitData40(fnames, labels,
                                                                                                     ratios,
                                                                                                     args.batch_size)
