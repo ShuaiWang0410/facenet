@@ -429,8 +429,8 @@ def parse_argument(argv):
     parser.add_argument('--pretrained_model', type=str,
                         help='Load a pretrained model before training starts.',
                         # default="/Volumes/PowerExtension/20180402-114759/model-20180402-114759.ckpt-275")  # ShuaiWang 10-20:add pretrained models
-                        # default="/home/ec2-user/20180402-114759/model-20180402-114759.ckpt-275")  # ShuaiWang 10-20:add pretrained models
-                        )
+                        default="/home/ec2-user/20180402-114759/model-20180402-114759.ckpt-275")  # ShuaiWang 10-20:add pretrained models
+                        # )
     parser.add_argument('--data_dir', type=str,
                         help='Path to the data directory containing aligned face patches.',
                         # default='~/datasets/casia/casia_maxpy_mtcnnalign_182_160') # Shuai: use mine
@@ -474,7 +474,7 @@ def parse_argument(argv):
     parser.add_argument('--learning_rate', type=float,
                         help='Initial learning rate. If set to a negative value a learning rate ' +
                              # 'schedule can be specified in the file "learning_rate_schedule.txt"', default=0.1) # ShuaiWang use mine
-                             'schedule can be specified in the file "learning_rate_schedule.txt"', default=0.05)
+                             'schedule can be specified in the file "learning_rate_schedule.txt"', default=0.01)
     parser.add_argument('--learning_rate_decay_epochs', type=int,
                         # help='Number of epochs between learning rate decay.', default=100)
                         help='Number of epochs between learning rate decay.',
