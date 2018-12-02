@@ -350,12 +350,11 @@ def main(args):
             print("<----------------Start training---------------->")
             while epoch < args.max_nrof_epochs:
 
-                step = 0
-
-                while step < args.epoch_size:
+                l_step = 0
+                while l_step < args.epoch_size:
 
                     image_batch_, label_batch_ = next_batch()
-                    print("Step %d of Epoch %d, batch size %s" % (sess.run(g_step), epoch, image_batch_[0]))
+                    print("Step %d of Epoch %d, batch size %s" % (l_step, epoch, image_batch_[0]))
                     # sess.run(enqueue_op, feed_dict={image_path_ph:train_fnames, label_ph: train_labels})
                     sess.run(enqueue_op, feed_dict={image_path_ph: image_batch_})
                     los, _= sess.run([loss, train_op],
@@ -372,10 +371,11 @@ def main(args):
                         summary = tf.Summary()
                         val_m = np.mean(val_m)
                         summary.value.add(tag='val_m', simple_value=val_m)
-                        print("Step %d of Epoch %d, the accuracy is %g" % (sess.run(g_step), epoch, val_m))
+                        print("Step %d of Epoch %d, the validation rate is %g" % (l_step, epoch, val_m))
                     step += 1
+                    l_step += 1
 
-                    summary_writer.add_summary(summary, sess.run(g_step))
+                    summary_writer.add_summary(summary, step)
 
                 epoch += 1
                 print("<----------------No." + str(epoch) + " Epoch Finished---------------->")
@@ -398,7 +398,7 @@ def main(args):
                 summary = tf.Summary()
                 accuracy_m = np.mean(accuracy_m)
                 summary.value.add(tag='accuracy_m', simple_value=accuracy_m)
-                summary_writer.add_summary(summary, sess.run(g_step))
+                summary_writer.add_summary(summary, step)
                 print("Epoch %d, the accuracy is %g" % (epoch, accuracy_m))
                 print("<----------------End evaluating---------------->")
 
@@ -408,7 +408,7 @@ def main(args):
                     embeddings, total_loss, train_op, summary_op, summary_writer, args.learning_rate_schedule_file,
                     args.embedding_size, anchor, positive, negative, triplet_loss)
                 '''
-            save_variables_and_metagraph(sess, saver, summary_writer, model_dir, subdir, g_step)
+            save_variables_and_metagraph(sess, saver, summary_writer, model_dir, subdir, step)
 
 
 def parse_argument(argv):
