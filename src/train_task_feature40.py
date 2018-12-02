@@ -170,7 +170,7 @@ def main(args):
                                                                                                     args.batch_size)
     '''
     fnames, labels = celeba.getData40(select_feature_image_path, all_labels_path)
-    ratios = [50, 1, 100]
+    ratios = [200, 1, 700]
     test_fnames, test_labels, val_fnames, val_labels, train_fnames, train_labels = celeba.splitData40(fnames, labels,
                                                                                                     ratios,
                                                                                                     args.batch_size)
@@ -438,7 +438,7 @@ def parse_argument(argv):
                         default='models.inception_resnet_v1_mt_40')
     parser.add_argument('--max_nrof_epochs', type=int,
                         # help='Number of epochs to run.', default=500) # Shuai: shrink the max epoch
-                        help='Number of epochs to run.', default=1)
+                        help='Number of epochs to run.', default=6)
     parser.add_argument('--batch_size', type=int,
                         # help='Number of images to process in a batch.', default=90) # Shuai: shrink the batch_size to 50
                         help='Number of images to process in a batch.', default=100)
@@ -452,7 +452,7 @@ def parse_argument(argv):
                         # help='Number of images per person.', default=40) # Shuai: use mine
                         help='Number of images per person', default=40)'''
     parser.add_argument('--epoch_size', type=int,
-                        help='Number of batches per epoch.', default=100)
+                        help='Number of batches per epoch.', default=700)
     '''parser.add_argument('--alpha', type=float,
                         help='Positive to negative triplet distance margin.', default=0.2)'''
     parser.add_argument('--embedding_size', type=int,
