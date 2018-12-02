@@ -375,6 +375,8 @@ def main(args):
                         print("Step %d of Epoch %d, the accuracy is %g" % (step, epoch, val_m))
                     step += 1
 
+                    summary_writer.add_summary(summary, step)
+
                 epoch += 1
                 print("<----------------No." + str(epoch) + " Epoch Finished---------------->")
 
@@ -396,6 +398,7 @@ def main(args):
                 summary = tf.Summary()
                 accuracy_m = np.mean(accuracy_m)
                 summary.value.add(tag='accuracy_m', simple_value=accuracy_m)
+                summary_writer.add_summary(summary, step)
                 print("Epoch %d, the accuracy is %g" % (epoch, accuracy_m))
                 print("<----------------End evaluating---------------->")
 
@@ -435,7 +438,7 @@ def parse_argument(argv):
                         default='models.inception_resnet_v1_mt_40')
     parser.add_argument('--max_nrof_epochs', type=int,
                         # help='Number of epochs to run.', default=500) # Shuai: shrink the max epoch
-                        help='Number of epochs to run.', default=8)
+                        help='Number of epochs to run.', default=1)
     parser.add_argument('--batch_size', type=int,
                         # help='Number of images to process in a batch.', default=90) # Shuai: shrink the batch_size to 50
                         help='Number of images to process in a batch.', default=100)
@@ -449,7 +452,7 @@ def parse_argument(argv):
                         # help='Number of images per person.', default=40) # Shuai: use mine
                         help='Number of images per person', default=40)'''
     parser.add_argument('--epoch_size', type=int,
-                        help='Number of batches per epoch.', default=700)
+                        help='Number of batches per epoch.', default=100)
     '''parser.add_argument('--alpha', type=float,
                         help='Positive to negative triplet distance margin.', default=0.2)'''
     parser.add_argument('--embedding_size', type=int,
@@ -469,7 +472,7 @@ def parse_argument(argv):
     parser.add_argument('--learning_rate', type=float,
                         help='Initial learning rate. If set to a negative value a learning rate ' +
                              # 'schedule can be specified in the file "learning_rate_schedule.txt"', default=0.1) # ShuaiWang use mine
-                             'schedule can be specified in the file "learning_rate_schedule.txt"', default=1e-4)
+                             'schedule can be specified in the file "learning_rate_schedule.txt"', default=0.01)
     parser.add_argument('--learning_rate_decay_epochs', type=int,
                         # help='Number of epochs between learning rate decay.', default=100)
                         help='Number of epochs between learning rate decay.',
