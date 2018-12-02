@@ -264,11 +264,12 @@ def main(args):
         # labels_batch = toOneHot(labels_batch, batch_size)
 
         # Test queue
-
+        '''
         learning_rate = tf.train.exponential_decay(learning_rate_ph, g_step,
                                                    args.learning_rate_decay_epochs * args.epoch_size,
                                                    args.learning_rate_decay_factor, staircase=True)
-        tf.summary.scalar('learning_rate', learning_rate)
+        '''
+        # tf.summary.scalar('learning_rate', learning_rate)
 
         prelogits, features, _ = mt_network.inference(image_batch, args.keep_probability,
                                                       phase_train=phase_train_ph,
@@ -278,7 +279,8 @@ def main(args):
 
         loss = tf.keras.backend.binary_crossentropy(target=labels_ph, output=features_sig)
         cross_entropy = tf.reduce_mean(loss)
-        train_op = tf.train.AdagradDAOptimizer(learning_rate, global_step=g_step).minimize(cross_entropy)
+        # train_op = tf.train.AdagradDAOptimizer(leanring_rate, global_step=g_step).minimize(cross_entropy)
+        train_op = tf.train.AdagradDAOptimizer(args.learning_rate, global_step=g_step).minimize(cross_entropy)
 
 
         # correct_prediction_val = tf.equal(tf.argmax(feature1, 1), tf.argmax(labels_batch, 1))
@@ -467,7 +469,7 @@ def parse_argument(argv):
     parser.add_argument('--learning_rate', type=float,
                         help='Initial learning rate. If set to a negative value a learning rate ' +
                              # 'schedule can be specified in the file "learning_rate_schedule.txt"', default=0.1) # ShuaiWang use mine
-                             'schedule can be specified in the file "learning_rate_schedule.txt"', default=0.1)
+                             'schedule can be specified in the file "learning_rate_schedule.txt"', default=1e-4)
     parser.add_argument('--learning_rate_decay_epochs', type=int,
                         # help='Number of epochs between learning rate decay.', default=100)
                         help='Number of epochs between learning rate decay.',
