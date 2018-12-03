@@ -435,7 +435,7 @@ def parse_argument(argv):
     parser.add_argument('--finetune_model', type=str,
                         help='Load a pretrained model before training starts.',
                         # default="/Volumes/PowerExtension/20180402-114759/model-20180402-114759.ckpt-275")  # ShuaiWang 10-20:add pretrained models
-                        default="/home/ec2-user/20181202-203525/models/model-20181202-203525.ckpt-6000")  # ShuaiWang 10-20:add pretrained models
+                        default="/home/ec2-user/20181202-203525/model-20181202-203525.ckpt-6000")  # ShuaiWang 10-20:add pretrained models
                         #)
     parser.add_argument('--pretrained_model', type=str,
                         help='Load a pretrained model before training starts.'#,
