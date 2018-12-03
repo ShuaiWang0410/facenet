@@ -236,7 +236,7 @@ def inception_resnet_v1(inputs, is_training=True,
                 end_points['Mixed_8b'] = net
 
                 # Shuai: Proj2 stop the gradient right here
-                net = tf.stop_gradient(net)
+                # net = tf.stop_gradient(net)
 
                 # task 1
 
