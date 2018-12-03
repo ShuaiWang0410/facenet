@@ -332,6 +332,12 @@ def main(args):
                 # tf.reset_default_graph()
                 loader = tf.train.Saver(tensors_to_load)
                 loader.restore(sess, args.pretrained_model)
+
+            if args.finetune_model:
+
+                print("<------ Now start finetuning training ------>",)
+                tf.train.Saver.restore(sess, args.finetune_model)
+
                 '''
                 facenet_reader = tf.train.NewCheckpointReader(args.pretrained_model)
                 # read checkpoint file from pre-trained model check-point
@@ -354,7 +360,7 @@ def main(args):
                 while l_step < args.epoch_size:
 
                     image_batch_, label_batch_ = next_batch()
-                    print("Step %d of Epoch %d, batch size %s" % (l_step, epoch, image_batch_[0]))
+                    # print("Step %d of Epoch %d, batch size %s" % (l_step, epoch, image_batch_[0]))
                     # sess.run(enqueue_op, feed_dict={image_path_ph:train_fnames, label_ph: train_labels})
                     sess.run(enqueue_op, feed_dict={image_path_ph: image_batch_})
                     los, _= sess.run([loss, train_op],
@@ -426,8 +432,13 @@ def parse_argument(argv):
     parser.add_argument('--gpu_memory_fraction', type=float,
                         help='Upper bound on the amount of GPU memory that will be used by the process.',
                         default=0.98)  # ShuaiWang set 1 to 2
-    parser.add_argument('--pretrained_model', type=str,
+    parser.add_argument('--finetune_model', type=str,
                         help='Load a pretrained model before training starts.',
+                        # default="/Volumes/PowerExtension/20180402-114759/model-20180402-114759.ckpt-275")  # ShuaiWang 10-20:add pretrained models
+                        default="/home/ec2-user/20181202-203525/model-20181202-203525.ckpt-6000")  # ShuaiWang 10-20:add pretrained models
+                        #)
+    parser.add_argument('--pretrained_model', type=str,
+                        help='Load a pretrained model before training starts.'#,
                         # default="/Volumes/PowerExtension/20180402-114759/model-20180402-114759.ckpt-275")  # ShuaiWang 10-20:add pretrained models
                         # default="/home/ec2-user/20180402-114759/model-20180402-114759.ckpt-275")  # ShuaiWang 10-20:add pretrained models
                         )
@@ -474,7 +485,7 @@ def parse_argument(argv):
     parser.add_argument('--learning_rate', type=float,
                         help='Initial learning rate. If set to a negative value a learning rate ' +
                              # 'schedule can be specified in the file "learning_rate_schedule.txt"', default=0.1) # ShuaiWang use mine
-                             'schedule can be specified in the file "learning_rate_schedule.txt"', default=0.05)
+                             'schedule can be specified in the file "learning_rate_schedule.txt"', default=0.01)
     parser.add_argument('--learning_rate_decay_epochs', type=int,
                         # help='Number of epochs between learning rate decay.', default=100)
                         help='Number of epochs between learning rate decay.',
