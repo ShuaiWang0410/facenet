@@ -16,7 +16,6 @@ select_feature_image_path = "/Volumes/PowerExtension"
 #---------------------------------------------------------------------------------------
 
 '''
-统计每位名人有多少图片，输出为(人物id, 文件名列表)的哈希表
 '''
 def countIdentities(label_path, identity_labels):
 
@@ -36,7 +35,6 @@ def countIdentities(label_path, identity_labels):
     
     return dic_ids_file
 '''
-统计各Feature有多少张图片，输出为(特征id, 文件名列表)和(特征名称，特征id)的哈希表
 '''
 def countFeaturesByFiles(label_path, attribute_labels):
     
@@ -73,7 +71,6 @@ def countFeaturesByFiles(label_path, attribute_labels):
     return dic_attrib_files, dic_attname_attrib
 
 '''
-输入(特征id, 文件名列表)和(特征名称，特征id)的两个哈希表，输出需要处理的正例图片名称的txt
 '''
 
 def outputSelectedFileNames(dic_attrib_files, dic_attname_attrib, output_path, output_file):
@@ -96,7 +93,6 @@ def outputSelectedFileNames(dic_attrib_files, dic_attname_attrib, output_path, o
            print(count)
 
 '''
-输入图片路径，目标路径，正例图片名称列表路径，被选择的特征名称，输出目标路径与label的npy文件
 '''
 
 def generateTrainSetOnFeature(image_path, copy_path, list_path, feature, copy=False):
