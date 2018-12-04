@@ -34,8 +34,8 @@ import facenet
 def evaluate(embeddings, actual_issame, nrof_folds=10, distance_metric=0, subtract_mean=False):
     # Calculate evaluation metrics
     thresholds = np.arange(0, 4, 0.01)
-    embeddings1 = embeddings[0::2] # ShuaiWang: get subset，embeddings1 is 0，2，4，6，8，，，
-    embeddings2 = embeddings[1::2] # ShuaiWang: get subset，embeddings2 is 1，3，5，7，9，，，
+    embeddings1 = embeddings[0::2] # ShuaiWang: get subset，embeddings1 is 0,2,4,6,8,,,
+    embeddings2 = embeddings[1::2] # ShuaiWang: get subset，embeddings2 is 1,3,5,7,9,,,
     tpr, fpr, accuracy = facenet.calculate_roc(thresholds, embeddings1, embeddings2,
         np.asarray(actual_issame), nrof_folds=nrof_folds, distance_metric=distance_metric, subtract_mean=subtract_mean)
     thresholds = np.arange(0, 4, 0.001)
