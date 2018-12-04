@@ -21,10 +21,10 @@ import lfw
 import celeba
 
 feature_name = "Wearing_Lipstick"
-select_feature_image_path = "/home/ec2-user/Wearing_Lipstick"
+select_feature_image_path = "/home/project03/Wearing_Lipstick"
 # select_feature_image_path = "/Volumes/PowerExtension/Wearing_Lipstick_align"
 # select_feature_image_path = "/Volumes/PowerExtension/Wearing_Lipstick_align/Wearing_Lipstick"
-all_labels_path = "/home/ec2-user/labels_40"
+all_labels_path = "/home/project03/labels_40"
 # all_labels_path = "/Volumes/PowerExtension/celebA-labels"
 
 
@@ -435,17 +435,17 @@ def parse_argument(argv):
     parser.add_argument('--finetune_model', type=str,
                         help='Load a pretrained model before training starts.',
                         # default="/Volumes/PowerExtension/20180402-114759/model-20180402-114759.ckpt-275")  # ShuaiWang 10-20:add pretrained models
-                        default="/home/ec2-user/20181202-203525/model-20181202-203525.ckpt-6000")  # ShuaiWang 10-20:add pretrained models
+                        default="/home/project03/20181202-203525/model-20181202-203525.ckpt-6000")  # ShuaiWang 10-20:add pretrained models
                         #)
     parser.add_argument('--pretrained_model', type=str,
                         help='Load a pretrained model before training starts.'#,
                         # default="/Volumes/PowerExtension/20180402-114759/model-20180402-114759.ckpt-275")  # ShuaiWang 10-20:add pretrained models
-                        # default="/home/ec2-user/20180402-114759/model-20180402-114759.ckpt-275")  # ShuaiWang 10-20:add pretrained models
+                        # default="/home/project03/20180402-114759/model-20180402-114759.ckpt-275")  # ShuaiWang 10-20:add pretrained models
                         )
     parser.add_argument('--data_dir', type=str,
                         help='Path to the data directory containing aligned face patches.',
                         # default='~/datasets/casia/casia_maxpy_mtcnnalign_182_160') # Shuai: use mine
-                        default='/home/ec2-user/output_align')
+                        default='/home/project03/output_align')
     parser.add_argument('--model_def', type=str,
                         help='Model definition. Points to a module containing the definition of the inference graph.',
                         default='models.inception_resnet_v1_mt_40')
