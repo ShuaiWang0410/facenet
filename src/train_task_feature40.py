@@ -414,11 +414,12 @@ def main(args):
                 accuracy_m = sess.run([accuracy], feed_dict={output_ph: base})
                 accuracy_n = sess.run([accuracy_n], feed_dict={output_ph2: np.transpose(base), labels_ph2: np.transpose(test_labels)})
                 summary = tf.Summary()
+                print(accuracy_n)
                 accuracy_m = np.mean(accuracy_m)
                 accuracy_n = np.mean(accuracy_n)
                 summary.value.add(tag='accuracy_m', simple_value=accuracy_m)
                 summary_writer.add_summary(summary, step)
-                print(accuracy_n)
+
                 print("Epoch %d, the accuracy is %g" % (epoch, accuracy_n))
                 print("<----------------End evaluating---------------->")
 
