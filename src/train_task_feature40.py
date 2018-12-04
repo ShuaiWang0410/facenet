@@ -299,6 +299,10 @@ def main(args):
         #
 
         output_ph = tf.placeholder(tf.float32, shape=(None, 40))
+        output_ph2 = tf.placeholder(tf.float32, shape=(40,None))
+        labels_ph2 = tf.placeholder(tf.float32, shape=(40,None))
+        accuracy_n = tf.keras.metrics.binary_accuracy(y_true=labels_ph2, y_pred=output_ph2)
+
         accuracy = tf.keras.metrics.binary_accuracy(y_true=test_labels, y_pred=output_ph)
 
         print("<----------------Finish loading all training images---------------->")
@@ -406,12 +410,15 @@ def main(args):
                     base = np.concatenate((base, features_sig_))
                     bn += 1
 
+
                 accuracy_m = sess.run([accuracy], feed_dict={output_ph: base})
+                accuracy_n = sess.run([accuracy], feed_dict={output_ph2: np.transpose(base), labels_ph2: np.transpose(test_labels)})
                 summary = tf.Summary()
                 accuracy_m = np.mean(accuracy_m)
+                accuracy_n = np.mean(accuracy_n)
                 summary.value.add(tag='accuracy_m', simple_value=accuracy_m)
                 summary_writer.add_summary(summary, step)
-                print("Epoch %d, the accuracy is %g" % (epoch, accuracy_m))
+                print("Epoch %d, the accuracy is %g" % (epoch, accuracy_n))
                 print("<----------------End evaluating---------------->")
 
                 '''
