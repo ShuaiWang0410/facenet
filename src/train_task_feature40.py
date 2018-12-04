@@ -285,7 +285,8 @@ def main(args):
 
         # correct_prediction_val = tf.equal(tf.argmax(feature1, 1), tf.argmax(labels_batch, 1))
         # accuracy_val = tf.reduce_mean(tf.cast(correct_prediction_val, tf.float32))
-        accuracy_val = tf.keras.metrics.binary_accuracy(y_true=labels_ph, y_pred=features_sig, threshold=0.5)
+        #
+        accuracy_val = tf.keras.metrics.binary_accuracy(y_true=labels_ph, y_pred=features_sig)
         #
         '''
         output_ph = tf.placeholder(tf.float32, shape=(None, 2))
@@ -451,7 +452,7 @@ def parse_argument(argv):
                         default='models.inception_resnet_v1_mt_40')
     parser.add_argument('--max_nrof_epochs', type=int,
                         # help='Number of epochs to run.', default=500) # Shuai: shrink the max epoch
-                        help='Number of epochs to run.', default=6)
+                        help='Number of epochs to run.', default=3)
     parser.add_argument('--batch_size', type=int,
                         # help='Number of images to process in a batch.', default=90) # Shuai: shrink the batch_size to 50
                         help='Number of images to process in a batch.', default=100)
