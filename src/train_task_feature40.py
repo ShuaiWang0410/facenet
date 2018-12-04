@@ -485,7 +485,7 @@ def parse_argument(argv):
     parser.add_argument('--learning_rate', type=float,
                         help='Initial learning rate. If set to a negative value a learning rate ' +
                              # 'schedule can be specified in the file "learning_rate_schedule.txt"', default=0.1) # ShuaiWang use mine
-                             'schedule can be specified in the file "learning_rate_schedule.txt"', default=0.02)
+                             'schedule can be specified in the file "learning_rate_schedule.txt"', default=0.001)
     parser.add_argument('--learning_rate_decay_epochs', type=int,
                         # help='Number of epochs between learning rate decay.', default=100)
                         help='Number of epochs between learning rate decay.',
