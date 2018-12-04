@@ -11,6 +11,7 @@ import os.path
 import time
 import sys
 import tensorflow as tf
+
 import numpy as np
 import importlib
 import itertools
@@ -309,8 +310,9 @@ def main(args):
 
         # Set gpu options
         gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=args.gpu_memory_fraction)
-
-        sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options), graph=tf.get_default_graph())
+        config = tf.ConfigProto(gpu_options=gpu_options)
+        config.gpu_options.allow_growth = True
+        sess = tf.Session(config=config, graph=tf.get_default_graph())
 
         # Initialize variables
         sess.run(tf.global_variables_initializer(), feed_dict={phase_train_ph: True})
