@@ -360,6 +360,7 @@ def main(args):
             while epoch < args.max_nrof_epochs:
 
                 l_step = 0
+                '''
                 while l_step < args.epoch_size:
 
                     image_batch_, label_batch_ = next_batch()
@@ -386,7 +387,7 @@ def main(args):
                     step += 1
                     l_step += 1
 
-
+                '''
 
                 epoch += 1
                 print("<----------------No." + str(epoch) + " Epoch Finished---------------->")
