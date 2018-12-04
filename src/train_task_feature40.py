@@ -454,7 +454,7 @@ def parse_argument(argv):
                         default='models.inception_resnet_v1_mt_40')
     parser.add_argument('--max_nrof_epochs', type=int,
                         # help='Number of epochs to run.', default=500) # Shuai: shrink the max epoch
-                        help='Number of epochs to run.', default=3)
+                        help='Number of epochs to run.', default=1)
     parser.add_argument('--batch_size', type=int,
                         # help='Number of images to process in a batch.', default=90) # Shuai: shrink the batch_size to 50
                         help='Number of images to process in a batch.', default=50)
