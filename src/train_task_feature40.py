@@ -298,7 +298,7 @@ def main(args):
         #
 
         output_ph = tf.placeholder(tf.float32, shape=(None, 40))
-        accuracy = tf.keras.metrics.binary_accuracy(y_true=test_labels, y_pred=output_ph, threshold=0.5)
+        accuracy = tf.keras.metrics.binary_accuracy(y_true=test_labels, y_pred=output_ph)
 
         print("<----------------Finish loading all training images---------------->")
 
