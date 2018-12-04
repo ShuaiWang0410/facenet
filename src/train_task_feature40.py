@@ -412,7 +412,7 @@ def main(args):
 
 
                 accuracy_m = sess.run([accuracy], feed_dict={output_ph: base})
-                accuracy_n = sess.run([accuracy], feed_dict={output_ph2: np.transpose(base), labels_ph2: np.transpose(test_labels)})
+                accuracy_n = sess.run([accuracy_n], feed_dict={output_ph2: np.transpose(base), labels_ph2: np.transpose(test_labels)})
                 summary = tf.Summary()
                 accuracy_m = np.mean(accuracy_m)
                 accuracy_n = np.mean(accuracy_n)
