@@ -171,7 +171,7 @@ def main(args):
                                                                                                     args.batch_size)
     '''
     fnames, labels = celeba.getData40(select_feature_image_path, all_labels_path)
-    ratios = [100, 1, 500]
+    ratios = [200, 1, 1000]
     test_fnames, test_labels, val_fnames, val_labels, train_fnames, train_labels = celeba.splitData40(fnames, labels,
                                                                                                     ratios,
                                                                                                     args.batch_size)
@@ -401,7 +401,7 @@ def main(args):
                 bn = 0
                 for i in range(ratios[0]):
                     features_sig_ = sess.run(features_sig, feed_dict={phase_train_ph: False})
-                    print(str(bn) + " test batch out of queue")
+                    # print(str(bn) + " test batch out of queue")
                     base = np.concatenate((base, features_sig_))
                     bn += 1
 
@@ -457,7 +457,7 @@ def parse_argument(argv):
                         help='Number of epochs to run.', default=3)
     parser.add_argument('--batch_size', type=int,
                         # help='Number of images to process in a batch.', default=90) # Shuai: shrink the batch_size to 50
-                        help='Number of images to process in a batch.', default=100)
+                        help='Number of images to process in a batch.', default=50)
     parser.add_argument('--image_size', type=int,
                         # help='Image size (height, width) in pixels.', default=160) # Shuai: use our size
                         help='Image size (height, width) in pixels.', default=182)
@@ -468,7 +468,7 @@ def parse_argument(argv):
                         # help='Number of images per person.', default=40) # Shuai: use mine
                         help='Number of images per person', default=40)'''
     parser.add_argument('--epoch_size', type=int,
-                        help='Number of batches per epoch.', default=500)
+                        help='Number of batches per epoch.', default=1000)
     '''parser.add_argument('--alpha', type=float,
                         help='Positive to negative triplet distance margin.', default=0.2)'''
     parser.add_argument('--embedding_size', type=int,
