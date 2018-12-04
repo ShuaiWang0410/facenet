@@ -418,6 +418,7 @@ def main(args):
                 accuracy_n = np.mean(accuracy_n)
                 summary.value.add(tag='accuracy_m', simple_value=accuracy_m)
                 summary_writer.add_summary(summary, step)
+                print(accuracy_n)
                 print("Epoch %d, the accuracy is %g" % (epoch, accuracy_n))
                 print("<----------------End evaluating---------------->")
 
